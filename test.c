@@ -71,7 +71,7 @@ void addnew() {
     // Extract the numeric part from the last ID
     char prefix[MAX_LEN] = "KX ";
     int numPart = 0;
-    sscanf(lastID, "KX %d", &numPart);
+    sscanf(lastID, "KX %d", &numPart); // masih error
     numPart++;
     
     char newID[MAX_LEN];
