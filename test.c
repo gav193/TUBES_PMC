@@ -3,37 +3,97 @@
 #include <stdlib.h>
 
 #define MAX_ROWS 1000
-#define MAX_COLS 9
+#define MAX_COLS_1 9
 #define MAX_LEN 100
+#define MAX_COLS_2 7
+#define MAX_COLS_3 3
 
-char data[MAX_ROWS][MAX_COLS][MAX_LEN];
+char satu[MAX_ROWS][MAX_COLS_1][MAX_LEN];
+char dua[MAX_ROWS][MAX_COLS_2][MAX_LEN];
+char tiga[MAX_ROWS][MAX_COLS_3][MAX_LEN];
 
-void saveall() {
-    FILE* satu = fopen("satu.csv", "r");
-    if (!satu) {
-        printf("Can't open file\n");
+void remove_newline(char *str) {
+    char *pos;
+    if ((pos = strchr(str, '\n')) != NULL) {
+        *pos = '\0';
+    }
+}
+
+void parse(char filename[]) {
+    FILE* stream = fopen(filename, "r"); // open filename in read mode
+    if (!stream) {
+        printf("File not found!\n");
         return;
     }
 
-    char line[1024];
+    char temp[1024]; // temporary line
     int row = 0, col = 0;
-
-    while (fgets(line, sizeof(line), satu)) {
+    while (fgets(temp, sizeof(temp), stream)) { // first iteration to find dimension of csv
         col = 0;
         row++;
         if (row == 1) {
-            continue;  // Skip the header row
+            continue;  // skip the header row
+        }
+        char* val = strtok(temp, ";");
+        while (val) {
+            val = strtok(NULL, ";");
+            col++; // find number of columns 
+        }
+    }
+    rewind(stream);
+    row = 0;
+    col = 0; // reset row and column
+    char line[1024];
+    while (fgets(line, sizeof(line), stream)) { // second iteration to save data and finalize
+        col = 0;
+        if (row == 0) {
+            row++;  // skip the header row
+            continue;
         }
         char* val = strtok(line, ";");
         while (val) {
-            strncpy(data[row - 1][col], val, MAX_LEN - 1);
-            data[row - 1][col][MAX_LEN - 1] = '\0';
+            remove_newline(val); // remove newline
+            if (col < MAX_COLS_1 && row < MAX_ROWS) {
+                strncpy(temp, val, MAX_LEN - 1);
+                temp[MAX_LEN - 1] = '\0';
+                if (strcmp(filename, "satu.csv") == 0) {
+                    strcpy(satu[row - 1][col], temp);
+                } else if (strcmp(filename, "dua.csv") == 0) {
+                    strcpy(dua[row - 1][col], temp);
+                } else if (strcmp(filename, "tiga.csv") == 0) {
+                    strcpy(tiga[row - 1][col], temp);
+                }
+            }
             val = strtok(NULL, ";");
             col++;
         }
+        row++;
     }
+    fclose(stream);
 
-    fclose(satu);
+    // print out for debugging
+    if (strcmp(filename, "satu.csv") == 0) {
+        for (int i = 0; i < row - 1; i++) {
+            for (int j = 0; j < col; j++) {
+                printf("%s/", satu[i][j]);
+            }
+            printf("\n");
+        }
+    } else if (strcmp(filename, "dua.csv") == 0) {
+        for (int i = 0; i < row - 1; i++) {
+            for (int j = 0; j < col; j++) {
+                printf("%s/", dua[i][j]);
+            }
+            printf("\n");
+        }
+    } else if (strcmp(filename, "tiga.csv") == 0) {
+        for (int i = 0; i < row - 1; i++) {
+            for (int j = 0; j < col; j++) {
+                printf("%s/", tiga[i][j]);
+            }
+            printf("\n");
+        }
+    }
 }
 
 void addnew() {
@@ -71,7 +131,7 @@ void addnew() {
     // Extract the numeric part from the last ID
     char prefix[MAX_LEN] = "KX ";
     int numPart = 0;
-    sscanf(lastID, "KX %d", &numPart); // masih error
+    sscanf(lastID, "KX %d", &numPart);
     numPart++;
     
     char newID[MAX_LEN];
@@ -124,8 +184,13 @@ void addnew() {
 }
 
 int main() {
-    saveall();
-    addnew();
+    printf("Data CSV pertama : \n");
+    parse("satu.csv");
+    printf("\n\nData CSV kedua : \n");
+    parse("dua.csv");
+    printf("\n\nData CSV ketiga : \n");
+    parse("tiga.csv");
+    //addnew();
     return 0;
 }
 
