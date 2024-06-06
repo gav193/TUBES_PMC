@@ -53,14 +53,14 @@ void parse(char filename[]) {
         char* val = strtok(line, ";");
         while (val) {
             remove_newline(val); // remove newline
-            if (col < MAX_COLS_1 && row < MAX_ROWS) {
+            if (row < MAX_ROWS) {
                 strncpy(temp, val, MAX_LEN - 1);
                 temp[MAX_LEN - 1] = '\0';
-                if (strcmp(filename, "satu.csv") == 0) {
+                if (strcmp(filename, "satu.csv") == 0 && col < MAX_COLS_1) {
                     strcpy(satu[row - 1][col], temp);
-                } else if (strcmp(filename, "dua.csv") == 0) {
+                } else if (strcmp(filename, "dua.csv") == 0 && col < MAX_COLS_2) {
                     strcpy(dua[row - 1][col], temp);
-                } else if (strcmp(filename, "tiga.csv") == 0) {
+                } else if (strcmp(filename, "tiga.csv") == 0 && col < MAX_COLS_3) {
                     strcpy(tiga[row - 1][col], temp);
                 }
             }
@@ -74,21 +74,21 @@ void parse(char filename[]) {
     // print out for debugging
     if (strcmp(filename, "satu.csv") == 0) {
         for (int i = 0; i < row - 1; i++) {
-            for (int j = 0; j < col; j++) {
+            for (int j = 0; j < MAX_COLS_1; j++) {
                 printf("%s/", satu[i][j]);
             }
             printf("\n");
         }
     } else if (strcmp(filename, "dua.csv") == 0) {
         for (int i = 0; i < row - 1; i++) {
-            for (int j = 0; j < col; j++) {
+            for (int j = 0; j < MAX_COLS_2; j++) {
                 printf("%s/", dua[i][j]);
             }
             printf("\n");
         }
     } else if (strcmp(filename, "tiga.csv") == 0) {
         for (int i = 0; i < row - 1; i++) {
-            for (int j = 0; j < col; j++) {
+            for (int j = 0; j < MAX_COLS_3; j++) {
                 printf("%s/", tiga[i][j]);
             }
             printf("\n");
@@ -96,32 +96,44 @@ void parse(char filename[]) {
     }
 }
 
-void save(char data[MAX_ROWS][MAX_COLS_1][MAX_LEN], int num_cols, char filename[MAX_LEN]) {
-    // data array of string berisi data baru (full file) yang ingin di tambah ke dalam file yang diinginkan
-    FILE *stream = fopen(filename,"w");
+void save(char filename[]) {
+    FILE *stream = fopen(filename, "w");
     if (!stream) {
         printf("File not found!\n");
         return;
     }
+    
+    int num_cols;
+    char (*data)[MAX_LEN];
+
     // write header
     if (strcmp(filename, "satu.csv") == 0) {
         fprintf(stream, "No;Nama Lengkap;Alamat;Kota;Tempat Lahir;Tanggal Lahir;Umur (th);No BPJS;ID Pasien\n");
+        data = (char (*)[MAX_LEN])satu;
+        num_cols = MAX_COLS_1;
     } else if (strcmp(filename, "dua.csv") == 0) {
         fprintf(stream, "No;Tanggal;ID Pasien;Diagnosis;Tindakan;Kontrol;Biaya (Rp)\n");
+        data = (char (*)[MAX_LEN])dua;
+        num_cols = MAX_COLS_2;
     } else if (strcmp(filename, "tiga.csv") == 0) {
         fprintf(stream, "No;Aktivitas;Biaya (Rp)\n");
+        data = (char (*)[MAX_LEN])tiga;
+        num_cols = MAX_COLS_3;
+    } else {
+        fclose(stream);
+        return;
     }
+
     // write data
     for (int row = 0; row < MAX_ROWS; ++row) {
-        if (data[row][0][0] == '\0'){
+        if (data[row * num_cols][0] == '\0'){
             break; // row is empty
         }
         for (int col = 0; col < num_cols; ++col) {
-            fprintf(stream, "%s;", data[row][col]);
+            fprintf(stream, "%s;", data[row * num_cols + col]);
         }
         fprintf(stream, "\n");
     }
-
     fclose(stream);
 }
 
@@ -133,10 +145,13 @@ int main() {
     printf("\n\nData CSV ketiga : \n");
     parse("tiga.csv");
     
+    // testing untuk save (cek di file apakah berubah)
+    //strcpy(satu[4][2],"percobaan"); 
+
     // operasi fungsi pada data yang dibaca (misalkan dihapus / ditambah data baru)
-    save(satu, MAX_COLS_1, "satu.csv");
-    save(dua, MAX_COLS_2, "dua.csv");
-    save(tiga, MAX_COLS_3, "tiga.csv");
+    save("satu.csv");
+    save("dua.csv");
+    save("tiga.csv");
     // note : ini matrix satu,dua,tiga udah dioperasikan jadi isinya udah teredit (bukan data yang murni setelah parsing)
     return 0;
 }
