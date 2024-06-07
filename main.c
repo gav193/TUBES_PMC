@@ -148,6 +148,9 @@ int main() {
     // testing untuk save (cek di file apakah berubah)
     //strcpy(satu[4][2],"percobaan"); 
 
+    // buat manggil fungsi nomor 2 dari file crud_ket_pasien.c
+    crud_ket_pasien();
+    
     // operasi fungsi pada data yang dibaca (misalkan dihapus / ditambah data baru)
     save("satu.csv");
     save("dua.csv");
