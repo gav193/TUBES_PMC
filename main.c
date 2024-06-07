@@ -137,6 +137,9 @@ void save(char filename[]) {
     fclose(stream);
 }
 
+// Deklarasi fungsi dari crud_ket_pasien.c
+void crud_ket_pasien();
+
 int main() {
     printf("Data CSV pertama : \n");
     parse("satu.csv");
