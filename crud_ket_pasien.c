@@ -1,66 +1,56 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "main.h"
 
-#define MAX_ROWS 1000
-#define MAX_COLS_1 9
-#define MAX_COLS_2 7
-#define MAX_COLS_3 3
-#define MAX_LEN 100
-
-extern char satu[MAX_ROWS][MAX_COLS_1][MAX_LEN];
-extern char dua[MAX_ROWS][MAX_COLS_2][MAX_LEN];
-extern char tiga[MAX_ROWS][MAX_COLS_3][MAX_LEN];
-
-
-int findPasien(const char* id) {
-    for (int i = 0; i < MAX_ROWS; ++i) {
-        if (strcmp(dua[i][2], id) == 0) {
-            return i;
+// Fungsi untuk mencari pasien berdasarkan ID dalam linked list dua
+int findPasien(data* data, const char* id) {
+    dua* current = data->dua;
+    int index = 0;
+    while (current != NULL) {
+        if (strcmp(current->id, id) == 0) {
+            return index;
         }
+        current = current->next;
+        index++;
     }
     return -1;  
 }
 
-int findPasienInSatu(const char* id) {
-    for (int i = 0; i < MAX_ROWS; ++i) {
-        if (strcmp(satu[i][8], id) == 0) { 
-            return i;
+// Fungsi untuk mencari pasien berdasarkan ID dalam linked list satu
+satu* findPasienInSatu(data* data, const char* id) {
+    satu* current = data->satu;
+    while (current != NULL) {
+        if (strcmp(current->id, id) == 0) {
+            return current;
         }
+        current = current->next;
     }
-    return -1;  
+    return NULL;  
 }
 
-int getBiayaTindakan(const char* tindakan) {
-    for (int i = 0; i < MAX_ROWS; ++i) {
-        if (strcmp(tiga[i][1], tindakan) == 0) {
-            return atoi(tiga[i][2]);
+// Fungsi untuk mendapatkan biaya tindakan berdasarkan tindakan dalam linked list tiga
+int getBiayaTindakan(data* data, const char* tindakan) {
+    tiga* current = data->tiga;
+    while (current != NULL) {
+        if (strcmp(current->aktivitas, tindakan) == 0) {
+            return current->biaya;
         }
+        current = current->next;
     }
     return 0; 
 }
 
-//fungsi add
-void addEntry() {
+// Fungsi untuk menambahkan entry ke linked list dua
+void addEntry(data* data) {
     char id[MAX_LEN];
     printf("Masukkan ID pasien: ");
     fgets(id, MAX_LEN, stdin);
     strtok(id, "\n");
 
-    int pasienIndex = findPasienInSatu(id);
-    if (pasienIndex == -1) {
+    satu* pasien = findPasienInSatu(data, id);
+    if (pasien == NULL) {
         printf("Pasien dengan ID %s belum pernah mendaftar di klinik X\n", id);
-        return;
-    }
-
-    int i;
-    for (i = 0; i < MAX_ROWS; ++i) {
-        if (dua[i][0][0] == '\0') {
-            break;
-        }
-    }
-    if (i == MAX_ROWS) {
-        printf("Informasi Pasien sudah terisi, tidak bisa ditambahkan.\n");
         return;
     }
 
@@ -98,33 +88,55 @@ void addEntry() {
         default: strcpy(tindakan, ""); break;
     }
 
-    biaya_tindakan = getBiayaTindakan(tindakan);
+    biaya_tindakan = getBiayaTindakan(data, tindakan);
 
     char kontrol[MAX_LEN] = "01-Jan-23"; // Set kontrol date to "01-Jan-23"
 
     int biaya_total = 140000 + biaya_tindakan;
 
-    snprintf(dua[i][0], MAX_LEN, "%d", i + 1);
-    strncpy(dua[i][1], tanggal, MAX_LEN);
-    strncpy(dua[i][2], id, MAX_LEN);
-    strncpy(dua[i][3], diagnosis, MAX_LEN);
-    strncpy(dua[i][4], tindakan, MAX_LEN);
-    strncpy(dua[i][5], kontrol, MAX_LEN);
-    snprintf(dua[i][6], MAX_LEN, "%d", biaya_total);
+    // Membuat node baru untuk linked list dua
+    dua* new_entry = (dua*)malloc(sizeof(dua));
+    if (!new_entry) {
+        printf("Gagal menambahkan entry baru, tidak cukup memori.\n");
+        return;
+    }
+    strncpy(new_entry->tanggal, tanggal, MAX_LEN);
+    strncpy(new_entry->id, id, MAX_LEN);
+    strncpy(new_entry->diagnosis, diagnosis, MAX_LEN);
+    strncpy(new_entry->tindakan, tindakan, MAX_LEN);
+    strncpy(new_entry->kontrol, kontrol, MAX_LEN);
+    new_entry->biaya = biaya_total;
+    new_entry->next = NULL;
+
+    // Menambahkan entry baru ke linked list dua
+    dua* current = data->dua;
+    if (current == NULL) {
+        data->dua = new_entry;
+    } else {
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = new_entry;
+    }
 
     printf("Entry berhasil ditambahkan.\n");
 }
 
-
-//funfsi ubah
-void updateEntry() {
+// Fungsi untuk mengupdate entry dalam linked list dua
+void updateEntry(data* data) {
     char id[MAX_LEN];
     printf("Masukkan ID pasien: ");
     fgets(id, MAX_LEN, stdin);
     strtok(id, "\n");
 
-    int row = findPasien(id);
-    if (row == -1) {
+    dua* entry = data->dua;
+    while (entry != NULL) {
+        if (strcmp(entry->id, id) == 0) {
+            break;
+        }
+        entry = entry->next;
+    }
+    if (entry == NULL) {
         printf("ID Pasien tidak ditemukan.\n");
         return;
     }
@@ -148,7 +160,7 @@ void updateEntry() {
                 printf("Tanggal kedatangan pasien (dd-mm-yyyy): ");
                 fgets(tanggal, MAX_LEN, stdin);
                 strtok(tanggal, "\n");
-                strncpy(dua[row][1], tanggal, MAX_LEN);
+                strncpy(entry->tanggal, tanggal, MAX_LEN);
                 break;
             }
             case 2: {
@@ -164,7 +176,7 @@ void updateEntry() {
                     case 4: strcpy(diagnosis, "Keseleo"); break;
                     default: strcpy(diagnosis, ""); break;
                 }
-                strncpy(dua[row][3], diagnosis, MAX_LEN);
+                strncpy(entry->diagnosis, diagnosis, MAX_LEN);
                 break;
             }
             case 3: {
@@ -180,7 +192,7 @@ void updateEntry() {
                     case 4: strcpy(tindakan, "Pengobatan"); biaya_tindakan = 125000; break;
                     default: strcpy(tindakan, ""); biaya_tindakan = 0; break;
                 }
-                strncpy(dua[row][4], tindakan, MAX_LEN);
+                strncpy(entry->tindakan, tindakan, MAX_LEN);
                 break;
             }
             case 4:
@@ -193,94 +205,73 @@ void updateEntry() {
     }
 
     // Perbarui biaya total
-    int biaya_total = 15000 + 125000 + biaya_tindakan;
-    snprintf(dua[row][6], MAX_LEN, "%d", biaya_total);
-
+    entry->biaya = 15000 + 125000 + biaya_tindakan;
     printf("Entry telah diupdate.\n");
 }
 
-//fungsi delete
-void deleteEntry() {
+// Fungsi untuk menghapus entry dalam linked list dua
+void deleteEntry(data* data) {
     char id[MAX_LEN];
     printf("Masukkan ID pasien: ");
     fgets(id, MAX_LEN, stdin);
     strtok(id, "\n");
 
-    int rows[MAX_ROWS];
-    int count = 0;
+    dua* prev = NULL;
+    dua* current = data->dua;
 
-    // Cari semua baris dengan ID pasien yang sesuai
-    for (int i = 0; i < MAX_ROWS; ++i) {
-        if (strcmp(dua[i][2], id) == 0) {
-            rows[count++] = i;
+    while (current != NULL) {
+        if (strcmp(current->id, id) == 0) {
+            if (prev == NULL) {
+                data->dua = current->next;
+            } else {
+                prev->next = current->next;
+            }
+            free(current);
+            printf("Entry untuk ID pasien %s telah dihapus.\n", id);
+            return;
         }
+        prev = current;
+        current = current->next;
     }
 
-    if (count == 0) {
-        printf("ID Pasien tidak ditemukan.\n");
-        return;
-    }
-
-    // Tampilkan semua tanggal riwayat kedatangan untuk pasien yang sesuai
-    printf("Pilih tanggal riwayat kedatangan pasien:\n");
-    for (int i = 0; i < count; ++i) {
-        printf("%d. %s\n", i + 1, dua[rows[i]][1]);
-    }
-
-    // Minta pengguna memilih tanggal
-    int choice;
-    printf("Pilih opsi (1-%d): ", count);
-    scanf("%d", &choice);
-    getchar();  // Konsumsi newline
-
-    if (choice < 1 || choice > count) {
-        printf("Opsi tidak valid.\n");
-        return;
-    }
-
-    int row = rows[choice - 1];
-
-    // Hapus semua kolom kecuali kolom 0 (nomor)
-    for (int i = 1; i < MAX_COLS_2; ++i) {
-        dua[row][i][0] = '\0';
-    }
-
-    printf("Entry untuk ID pasien %s pada tanggal %s telah dihapus.\n", id, dua[row][1]);
+    printf("ID Pasien tidak ditemukan.\n");
 }
 
-
-//fungsi display
-void displayEntry() {
+// Fungsi untuk menampilkan entry dalam linked list dua
+void displayEntry(data* data) {
     char id[MAX_LEN];
     printf("Masukkan ID pasien: ");
     fgets(id, MAX_LEN, stdin);
     strtok(id, "\n");
 
-    int row = findPasien(id);
-    if (row == -1) {
-        printf("ID Pasien tidak ditemukan.\n");
-        return;
+    dua* entry = data->dua;
+    while (entry != NULL) {
+        if (strcmp(entry->id, id) == 0) {
+            printf("RIWAYAT PASIEN %s\n", id);
+            printf("Pasien datang di klinik X pada tanggal : %s\n", entry->tanggal);
+            printf("Diagnosis yang dimiliki pasien: %s\n", entry->diagnosis);
+            printf("Tindakan yang diberikan ke pasien: %s\n", entry->tindakan);
+            printf("Tanggal kontrol: %s\n", entry->kontrol);
+            return;
+        }
+        entry = entry->next;
     }
 
-    printf("RIWAYAT PASIEN %s\n", id);
-    printf("Pasien datang di klinik X pada tanggal : %s\n", dua[row][1]);
-    printf("Diagnosis yang dimiliki pasien: %s\n", dua[row][3]);
-    printf("Tindakan yang diberikan ke pasien: %s\n", dua[row][4]);
-    printf("Tanggal kontrol: %s\n", dua[row][5]);
+    printf("ID Pasien tidak ditemukan.\n");
 }
 
-//main dari file ini
-void crud_ket_pasien() {
+// Fungsi utama untuk menjalankan CRUD operasi
+void crud_ket_pasien(data* data) {
     printf("Pilih operasi apa yang akan dilakukan:\n1. Penambahan\n2. Pengubahan\n3. Penghapusan\n4. Menampilkan informasi\nPilihan: ");
     int choice;
     scanf("%d", &choice);
     getchar();  // Consume newline
 
     switch (choice) {
-        case 1: addEntry(); break;
-        case 2: updateEntry(); break;
-        case 3: deleteEntry(); break;
-        case 4: displayEntry(); break;
+        case 1: addEntry(data); break;
+        case 2: updateEntry(data); break;
+        case 3: deleteEntry(data); break;
+        case 4: displayEntry(data); break;
         default: printf("Operasi tidak valid.\n"); break;
     }
 }
