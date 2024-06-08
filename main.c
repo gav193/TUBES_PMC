@@ -2,11 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_ROWS 1000
-#define MAX_COLS_1 9
 #define MAX_LEN 100
-#define MAX_COLS_2 7
-#define MAX_COLS_3 3
 
 typedef struct satu {
     char nama[MAX_LEN];
@@ -145,41 +141,55 @@ void parse(char* filename, data* data) {
 }
 
 void save(char* filename, data* data) {
-    FILE* stream = fopen(filename, "r+");
+    FILE* stream = fopen(filename, "w");
     if (!stream) {
-        printf("File not found!\n");
+        printf("Error opening file for writing: %s\n", filename);
+        perror("fopen");
         return;
     }
     
     // Write header and data based on filename
     if (strcmp(filename, "satu.csv") == 0) {
+        printf("Saving data to satu.csv\n");
         fprintf(stream, "No;Nama Lengkap;Alamat;Kota;Tempat Lahir;Tanggal Lahir;No BPJS;ID Pasien\n");
         satu* current = data->satu;
         int row = 1;
         while (current != NULL) {
-            fprintf(stream, "%d;%s;%s;%s;%s;%s;%s;%s\n", row, current->nama, current->alamat, current->kota, current->loc_lahir,  current->tgl_lahir,current->umur, current->bpjs, current->id);
+            fprintf(stream, "%d;%s;%s;%s;%s;%s;%d;%s;%s", row, current->nama, current->alamat, current->kota, current->loc_lahir,  current->tgl_lahir,current->umur, current->bpjs, current->id);
             current = current->next;
             row++;
+            if (current != NULL) {
+                fprintf(stream,"\n");
+            }
         }
     } else if (strcmp(filename, "dua.csv") == 0) {
+        printf("Saving data to dua.csv\n");
         fprintf(stream, "No;Tanggal;ID Pasien;Diagnosis;Tindakan;Kontrol;Biaya (Rp)\n");
         dua* current = data->dua;
         int row = 1;
         while (current != NULL) {
-            fprintf(stream, "%d;%s;%s;%s;%s;%s;%d\n", row, current->tanggal,current->id, current->diagnosis, current->tindakan, current->kontrol, current->biaya);
+            fprintf(stream, "%d;%s;%s;%s;%s;%s;%d", row, current->tanggal,current->id, current->diagnosis, current->tindakan, current->kontrol, current->biaya);
             current = current->next;
             row++;
+            if (current != NULL) {
+                fprintf(stream, "\n");
+            }
         }
     } else if (strcmp(filename, "tiga.csv") == 0) {
+        printf("Saving data to tiga.csv\n");
         fprintf(stream, "No;Aktivitas;Biaya (Rp)\n");
         tiga* current = data->tiga;
         int row = 1;
         while (current != NULL) {
-            fprintf(stream, "%d;%s;%d\n", row, current->aktivitas, current->biaya * 1000);
+            fprintf(stream, "%d;%s;%d", row, current->aktivitas, current->biaya * 1000);
             current = current->next;
             row++;
+            if (current != NULL) {
+                fprintf(stream,"\n");
+            }
         }
     } else {
+        printf("Unknown filename: %s\n", filename);
         fclose(stream);
         return;
     }
@@ -224,21 +234,37 @@ void print_tiga(data* data) {
 // Deklarasi fungsi dari crud_ket_pasien.c
 void crud_ket_pasien();
 
-
 int main() {
     data data = {NULL, NULL, NULL};
     parse("satu.csv", &data);
     parse("dua.csv", &data);
     parse("tiga.csv", &data);
-    // buat manggil fungsi nomor 2 dari file crud_ket_pasien.c
-    crud_ket_pasien();
-    // for debugging
+
     // print_satu(&data);
     // printf("\n");
     // print_dua(&data);
     // printf("\n");
     // print_tiga(&data);
     // printf("\n");
+
+    // contoh save
+    // if (data.satu != NULL) {
+    //     // Modify the first entry as desired
+    //     strcpy(data.satu->nama, "John Doe");
+    //     strcpy(data.satu->alamat, "123 Main St");
+    //     strcpy(data.satu->kota, "Anytown");
+    //     strcpy(data.satu->loc_lahir, "Anytown");
+    //     strcpy(data.satu->tgl_lahir, "01/01/2000");
+    //     data.satu->umur = 30;
+    //     strcpy(data.satu->bpjs, "1234567890");
+    //     strcpy(data.satu->id, "P001");
+
+    //     // Save the modified data back to satu.csv
+    //     save("satu.csv", &data);
+    // }
+
+    // buat manggil fungsi nomor 2 dari file crud_ket_pasien.c
+    crud_ket_pasien();
     
     save("satu.csv", &data);
     save("dua.csv", &data);
