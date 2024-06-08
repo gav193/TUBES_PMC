@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX_ROWS 1000
 #define MAX_COLS_1 9
@@ -8,156 +8,241 @@
 #define MAX_COLS_2 7
 #define MAX_COLS_3 3
 
-char satu[MAX_ROWS][MAX_COLS_1][MAX_LEN];
-char dua[MAX_ROWS][MAX_COLS_2][MAX_LEN];
-char tiga[MAX_ROWS][MAX_COLS_3][MAX_LEN];
+typedef struct satu {
+    char nama[MAX_LEN];
+    char alamat[MAX_LEN];
+    char kota[MAX_LEN];
+    char loc_lahir[MAX_LEN];
+    char tgl_lahir[MAX_LEN];
+    int umur;
+    char bpjs[MAX_LEN];
+    char id[MAX_LEN];
+    struct satu* next;
+} satu;
 
-void remove_newline(char *str) {
-    char *pos;
+typedef struct dua {
+    char tanggal[MAX_LEN];
+    int hari;
+    int bulan;
+    int tahun; // untuk tanggal
+    char id[MAX_LEN];
+    char diagnosis[MAX_LEN];
+    char tindakan[MAX_LEN];
+    char kontrol[MAX_LEN];
+    int biaya;
+    struct dua* next;
+} dua;
+
+typedef struct tiga {
+    char aktivitas[MAX_LEN];
+    int biaya;
+    struct tiga* next;
+} tiga;
+
+typedef struct data {
+    struct satu* satu;
+    struct dua* dua;
+    struct tiga* tiga;
+} data;
+
+void insert(data* data, char* filename, void* new_node) {
+    if (strcmp(filename, "satu.csv") == 0) {
+        satu* new_satu = (satu*)new_node;
+        if (data->satu == NULL) {
+            data->satu = new_satu;
+        } else {
+            satu* temp = data->satu;
+            while (temp->next != NULL) {
+                temp = temp->next;
+            }
+            temp->next = new_satu;
+        }
+    } else if (strcmp(filename, "dua.csv") == 0) {
+        dua* new_dua = (dua*)new_node;
+        if (data->dua == NULL) {
+            data->dua = new_dua;
+        } else {
+            dua* temp = data->dua;
+            while (temp->next != NULL) {
+                temp = temp->next;
+            }
+            temp->next = new_dua;
+        }
+    } else if (strcmp(filename, "tiga.csv") == 0) {
+        tiga* new_tiga = (tiga*)new_node;
+        if (data->tiga == NULL) {
+            data->tiga = new_tiga;
+        } else {
+            tiga* temp = data->tiga;
+            while (temp->next != NULL) {
+                temp = temp->next;
+            }
+            temp->next = new_tiga;
+        }
+    }
+}
+
+void remove_newline(char* str) {
+    char* pos;
     if ((pos = strchr(str, '\n')) != NULL) {
         *pos = '\0';
     }
 }
 
-void parse(char filename[]) {
+void parse(char* filename, data* data) {
     FILE* stream = fopen(filename, "r"); // open filename in read mode
     if (!stream) {
-        printf("File not found!\n");
+        printf("Unable to open file");
         return;
     }
+    char line[1024]; // temporary line
+    int row = 0;
 
-    char temp[1024]; // temporary line
-    int row = 0, col = 0;
-    while (fgets(temp, sizeof(temp), stream)) { // first iteration to find dimension of csv
-        col = 0;
-        row++;
-        if (row == 1) {
-            continue;  // skip the header row
-        }
-        char* val = strtok(temp, ";");
-        while (val) {
-            val = strtok(NULL, ";");
-            col++; // find number of columns 
-        }
-    }
-    rewind(stream);
-    row = 0;
-    col = 0; // reset row and column
-    char line[1024];
-    while (fgets(line, sizeof(line), stream)) { // second iteration to save data and finalize
-        col = 0;
+    while (fgets(line, sizeof(line), stream)) { // read each line
         if (row == 0) {
             row++;  // skip the header row
             continue;
         }
+        
+        remove_newline(line); // remove newline
         char* val = strtok(line, ";");
-        while (val) {
-            remove_newline(val); // remove newline
-            if (row < MAX_ROWS) {
-                strncpy(temp, val, MAX_LEN - 1);
-                temp[MAX_LEN - 1] = '\0';
-                if (strcmp(filename, "satu.csv") == 0 && col < MAX_COLS_1) {
-                    strcpy(satu[row - 1][col], temp);
-                } else if (strcmp(filename, "dua.csv") == 0 && col < MAX_COLS_2) {
-                    strcpy(dua[row - 1][col], temp);
-                } else if (strcmp(filename, "tiga.csv") == 0 && col < MAX_COLS_3) {
-                    strcpy(tiga[row - 1][col], temp);
-                }
-            }
+
+        if (strcmp(filename, "satu.csv") == 0) {
             val = strtok(NULL, ";");
-            col++;
+            satu* new_satu = (satu*)malloc(sizeof(satu));
+            strcpy(new_satu->nama, val); val = strtok(NULL, ";");
+            strcpy(new_satu->alamat, val); val = strtok(NULL, ";");
+            strcpy(new_satu->kota, val); val = strtok(NULL, ";");
+            strcpy(new_satu->loc_lahir, val); val = strtok(NULL, ";");
+            strcpy(new_satu->tgl_lahir, val); val = strtok(NULL, ";");
+            new_satu->umur= atoi(val); val = strtok(NULL, ";");
+            strcpy(new_satu->bpjs, val); val = strtok(NULL, ";");
+            strcpy(new_satu->id, val);
+            new_satu->next = NULL;
+            insert(data, filename, new_satu);
+        } else if (strcmp(filename, "dua.csv") == 0) {
+            val = strtok(NULL, ";");
+            dua* new_dua = (dua*)malloc(sizeof(dua));
+            strcpy(new_dua->tanggal, val); val = strtok(NULL, ";");
+            strcpy(new_dua->id, val); val = strtok(NULL, ";");
+            strcpy(new_dua->diagnosis, val); val = strtok(NULL, ";");
+            strcpy(new_dua->tindakan, val); val = strtok(NULL, ";");
+            strcpy(new_dua->kontrol, val); val = strtok(NULL, ";");
+            new_dua->biaya = atoi(val);
+            new_dua->next = NULL;
+            insert(data, filename, new_dua);
+        } else if (strcmp(filename, "tiga.csv") == 0) {
+            val = strtok(NULL, ";");
+            tiga* new_tiga = (tiga*)malloc(sizeof(tiga));
+            strcpy(new_tiga->aktivitas, val); val = strtok(NULL, ";");
+            new_tiga->biaya = atoi(val);
+            new_tiga->next = NULL;
+            insert(data, filename, new_tiga);
         }
         row++;
     }
     fclose(stream);
-
-    // print out for debugging
-    if (strcmp(filename, "satu.csv") == 0) {
-        for (int i = 0; i < row - 1; i++) {
-            for (int j = 0; j < MAX_COLS_1; j++) {
-                printf("%s/", satu[i][j]);
-            }
-            printf("\n");
-        }
-    } else if (strcmp(filename, "dua.csv") == 0) {
-        for (int i = 0; i < row - 1; i++) {
-            for (int j = 0; j < MAX_COLS_2; j++) {
-                printf("%s/", dua[i][j]);
-            }
-            printf("\n");
-        }
-    } else if (strcmp(filename, "tiga.csv") == 0) {
-        for (int i = 0; i < row - 1; i++) {
-            for (int j = 0; j < MAX_COLS_3; j++) {
-                printf("%s/", tiga[i][j]);
-            }
-            printf("\n");
-        }
-    }
 }
 
-void save(char filename[]) {
-    FILE *stream = fopen(filename, "w");
+void save(char* filename, data* data) {
+    FILE* stream = fopen(filename, "r+");
     if (!stream) {
         printf("File not found!\n");
         return;
     }
     
-    int num_cols;
-    char (*data)[MAX_LEN];
-
-    // write header
+    // Write header and data based on filename
     if (strcmp(filename, "satu.csv") == 0) {
-        fprintf(stream, "No;Nama Lengkap;Alamat;Kota;Tempat Lahir;Tanggal Lahir;Umur (th);No BPJS;ID Pasien\n");
-        data = (char (*)[MAX_LEN])satu;
-        num_cols = MAX_COLS_1;
+        fprintf(stream, "No;Nama Lengkap;Alamat;Kota;Tempat Lahir;Tanggal Lahir;No BPJS;ID Pasien\n");
+        satu* current = data->satu;
+        int row = 1;
+        while (current != NULL) {
+            fprintf(stream, "%d;%s;%s;%s;%s;%s;%s;%s\n", row, current->nama, current->alamat, current->kota, current->loc_lahir,  current->tgl_lahir,current->umur, current->bpjs, current->id);
+            current = current->next;
+            row++;
+        }
     } else if (strcmp(filename, "dua.csv") == 0) {
         fprintf(stream, "No;Tanggal;ID Pasien;Diagnosis;Tindakan;Kontrol;Biaya (Rp)\n");
-        data = (char (*)[MAX_LEN])dua;
-        num_cols = MAX_COLS_2;
+        dua* current = data->dua;
+        int row = 1;
+        while (current != NULL) {
+            fprintf(stream, "%d;%s;%s;%s;%s;%s;%d\n", row, current->tanggal,current->id, current->diagnosis, current->tindakan, current->kontrol, current->biaya);
+            current = current->next;
+            row++;
+        }
     } else if (strcmp(filename, "tiga.csv") == 0) {
         fprintf(stream, "No;Aktivitas;Biaya (Rp)\n");
-        data = (char (*)[MAX_LEN])tiga;
-        num_cols = MAX_COLS_3;
+        tiga* current = data->tiga;
+        int row = 1;
+        while (current != NULL) {
+            fprintf(stream, "%d;%s;%d\n", row, current->aktivitas, current->biaya * 1000);
+            current = current->next;
+            row++;
+        }
     } else {
         fclose(stream);
         return;
     }
 
-    // write data
-    for (int row = 0; row < MAX_ROWS; ++row) {
-        if (data[row * num_cols][0] == '\0'){
-            break; // row is empty
-        }
-        for (int col = 0; col < num_cols; ++col) {
-            fprintf(stream, "%s;", data[row * num_cols + col]);
-        }
-        fprintf(stream, "\n");
-    }
     fclose(stream);
+}
+
+void print_satu(data* data) {
+    printf("Data Satu:\n");
+    satu* current = data->satu;
+    int count = 1;
+    while (current != NULL) {
+        printf("%d. ",count);
+        printf("Nama: %s, Alamat: %s, Kota: %s, Tempat Lahir: %s, Tanggal Lahir: %s, Umur : %d, No BPJS: %s, ID: %s\n",current->nama, current->alamat, current->kota, current->loc_lahir,current->tgl_lahir,current->umur, current->bpjs, current->id);
+        current = current->next;
+        count++;
+    }
+}
+void print_dua(data* data) {
+    printf("Data Dua:\n");
+    dua* current = data->dua;
+    int count = 1;
+    while (current != NULL) {
+        printf("%d. ",count);
+        printf("Tanggal: %s, ID: %s, Diagnosis: %s, Tindakan: %s, Kontrol: %s, Biaya: %d\n",current->tanggal,current->id, current->diagnosis, current->tindakan, current->kontrol, current->biaya);
+        current = current->next;
+        count++;
+    }
+}
+void print_tiga(data* data) {
+    printf("Data Tiga:\n");
+    tiga* current = data->tiga;
+    int count = 1;
+    while (current != NULL) {
+        printf("%d. ",count);
+        printf("Aktivitas: %s, Biaya: %d\n",current->aktivitas, current->biaya * 1000);
+        current = current->next;
+        count++;
+    }
 }
 
 // Deklarasi fungsi dari crud_ket_pasien.c
 void crud_ket_pasien();
 
-int main() {
-    printf("Data CSV pertama : \n");
-    parse("satu.csv");
-    printf("\n\nData CSV kedua : \n");
-    parse("dua.csv");
-    printf("\n\nData CSV ketiga : \n");
-    parse("tiga.csv");
-    
-    // testing untuk save (cek di file apakah berubah)
-    //strcpy(satu[4][2],"percobaan"); 
 
+int main() {
+    data data = {NULL, NULL, NULL};
+    parse("satu.csv", &data);
+    parse("dua.csv", &data);
+    parse("tiga.csv", &data);
     // buat manggil fungsi nomor 2 dari file crud_ket_pasien.c
     crud_ket_pasien();
+    // for debugging
+    // print_satu(&data);
+    // printf("\n");
+    // print_dua(&data);
+    // printf("\n");
+    // print_tiga(&data);
+    // printf("\n");
     
-    // operasi fungsi pada data yang dibaca (misalkan dihapus / ditambah data baru)
-    save("satu.csv");
-    save("dua.csv");
-    save("tiga.csv");
-    // note : ini matrix satu,dua,tiga udah dioperasikan jadi isinya udah teredit (bukan data yang murni setelah parsing)
+    save("satu.csv", &data);
+    save("dua.csv", &data);
+    save("tiga.csv", &data);
+
     return 0;
 }
