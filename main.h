@@ -49,6 +49,8 @@ void save(char* filename, data* data);
 void print_satu(data* data);
 void print_dua(data* data);
 void print_tiga(data* data);
-void crud_ket_pasien();
+void crud_ket_pasien(data* data);
+void display_kontrol(data* data);
+
 
 #endif
