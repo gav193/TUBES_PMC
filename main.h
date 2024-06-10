@@ -44,6 +44,7 @@ typedef struct data {
 // Function prototypes
 void insert(data* data, char* filename, void* new_node);
 void remove_newline(char* str);
+void parse_tanggal(dua* new_dua);
 void parse(char* filename, data* data);
 void save(char* filename, data* data);
 void print_satu(data* data);
