@@ -10,6 +10,9 @@ typedef struct satu {
     char kota[MAX_LEN];
     char loc_lahir[MAX_LEN];
     char tgl_lahir[MAX_LEN];
+    int hari;
+    int bulan; 
+    int tahun;
     int umur;
     char bpjs[MAX_LEN];
     char id[MAX_LEN];
@@ -44,7 +47,7 @@ typedef struct data {
 // Function prototypes
 void insert(data* data, char* filename, void* new_node);
 void remove_newline(char* str);
-void parse_tanggal(dua* new_dua);
+void parse_tanggal(void* node, char* filename);
 void parse(char* filename, data* data);
 void save(char* filename, data* data);
 void print_satu(data* data);
