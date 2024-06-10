@@ -47,6 +47,78 @@ void remove_newline(char* str) {
     }
 }
 
+
+void parse_tanggal(dua* new_dua){
+    char* token;
+    char temp_tgl[MAX_LEN];
+    strcpy(temp_tgl, new_dua->tanggal);
+    int len = strlen(temp_tgl);
+    char separator[2] = " ";
+
+    // Detect separator
+    for (int i = 0; i < len; i++) {
+        if (temp_tgl[i] == '-') {
+            separator[0] = '-';
+            break;
+        }
+    }
+
+    // Parse day
+    token = strtok(temp_tgl, separator);
+    if (token) {
+        new_dua->hari = atoi(token);
+    } else {
+        printf("Invalid date format: %s\n", new_dua->tanggal);
+        return;
+    }
+
+    // Parse month
+    token = strtok(NULL, separator);
+    if (token) {
+        if (strcmp(token, "Januari") == 0 || strcmp(token, "januari") == 0 || strcmp(token, "Jan") == 0 || strcmp(token, "jan") == 0) {
+            new_dua->bulan = 1;
+        } else if (strcmp(token, "Februari") == 0 || strcmp(token, "februari") == 0 || strcmp(token, "Feb") == 0 || strcmp(token, "feb") == 0) {
+            new_dua->bulan = 2;
+        } else if (strcmp(token, "Maret") == 0 || strcmp(token, "maret") == 0 || strcmp(token, "Mar") == 0 || strcmp(token, "mar") == 0) {
+            new_dua->bulan = 3;
+        } else if (strcmp(token, "April") == 0 || strcmp(token, "april") == 0 || strcmp(token, "Apr") == 0 || strcmp(token, "apr") == 0) {
+            new_dua->bulan = 4;
+        } else if (strcmp(token, "Mei") == 0 || strcmp(token, "mei") == 0) {
+            new_dua->bulan = 5;
+        } else if (strcmp(token, "Juni") == 0 || strcmp(token, "juni") == 0 || strcmp(token, "Jun") == 0 || strcmp(token, "jun") == 0) {
+            new_dua->bulan = 6;
+        } else if (strcmp(token, "Juli") == 0 || strcmp(token, "juli") == 0 || strcmp(token, "Jul") == 0 || strcmp(token, "jul") == 0) {
+            new_dua->bulan = 7;
+        } else if (strcmp(token, "Agustus") == 0 || strcmp(token, "agustus") == 0 || strcmp(token, "Aug") == 0 || strcmp(token, "aug") == 0) {
+            new_dua->bulan = 8;
+        } else if (strcmp(token, "September") == 0 || strcmp(token, "september") == 0 || strcmp(token, "Sep") == 0 || strcmp(token, "sep") == 0) {
+            new_dua->bulan = 9;
+        } else if (strcmp(token, "Oktober") == 0 || strcmp(token, "oktober") == 0 || strcmp(token, "Okt") == 0 || strcmp(token, "okt") == 0) {
+            new_dua->bulan = 10;
+        } else if (strcmp(token, "November") == 0 || strcmp(token, "november") == 0 || strcmp(token, "Nov") == 0 || strcmp(token, "nov") == 0) {
+            new_dua->bulan = 11;
+        } else if (strcmp(token, "Desember") == 0 || strcmp(token, "desember") == 0 || strcmp(token, "Des") == 0 || strcmp(token, "des") == 0) {
+            new_dua->bulan = 12;
+        } else {
+            printf("Ditemukan bulan yang tidak valid : %s\n", token);
+            return;
+        }
+    } else {
+        printf("Invalid date format: %s\n", new_dua->tanggal);
+        return;
+    }
+    token = strtok(NULL, separator);
+    if (token) { 
+        int temp = atoi(token);
+        if (temp>=2000) {
+            temp-=2000;
+        }   
+        new_dua->tahun = temp;
+    } else { 
+        printf("Invalid date format: %s\n", new_dua->tanggal);
+    }
+}
+
 void parse(char* filename, data* data) {
     FILE* stream = fopen(filename, "r"); // open filename in read mode
     if (!stream) {
@@ -88,6 +160,9 @@ void parse(char* filename, data* data) {
             strcpy(new_dua->kontrol, val); val = strtok(NULL, ";");
             new_dua->biaya = atoi(val);
             new_dua->next = NULL;
+            parse_tanggal(new_dua);
+            // for debugging
+            //printf("\nd: %d, m:%d, y:%d \n", new_dua->hari, new_dua->bulan, new_dua->tahun);
             insert(data, filename, new_dua);
         } else if (strcmp(filename, "tiga.csv") == 0) {
             val = strtok(NULL, ";");
