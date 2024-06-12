@@ -2,6 +2,7 @@
 #define DATA_STRUCTURES_H
 
 #define MAX_LEN 100
+#define MAX_YEAR 2024 // Tahun hingga sampai 2024
 
 // Define your structures here
 typedef struct satu {
@@ -55,6 +56,7 @@ void print_dua(data* data);
 void print_tiga(data* data);
 void crud_ket_pasien(data* data);
 void display_kontrol(data* data);
+void laporan_biaya();
 
 
 #endif
