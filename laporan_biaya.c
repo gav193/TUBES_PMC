@@ -184,14 +184,14 @@ void TotalPerTahun(data* dataPasien) {
 }
 
 void laporan_biaya() {
-    data data_obj;
-    data_obj.dua = ReadFileDua("dua.csv");
+    data data_pasien;
+    data_pasien.dua = ReadFileDua("dua.csv");
 
-    RerataTahun(&data_obj);
-    TotalPerBulan(&data_obj);
-    TotalPerTahun(&data_obj);
+    RerataTahun(&data_pasien);
+    TotalPerBulan(&data_pasien);
+    TotalPerTahun(&data_pasien);
 
-    dua* current = data_obj.dua;
+    dua* current = data_pasien.dua;
     dua* next;
     while (current != NULL) {
         next = current->next;
