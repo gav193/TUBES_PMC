@@ -241,6 +241,9 @@ void parse(char* filename, data* data) {
             tiga* new_tiga = (tiga*)malloc(sizeof(tiga));
             strcpy(new_tiga->aktivitas, val); val = strtok(NULL, ";");
             new_tiga->biaya = atoi(val);
+            if (new_tiga->biaya < 1000) {
+                new_tiga->biaya = new_tiga->biaya * 1000;
+            }
             new_tiga->next = NULL;
             insert(data, filename, new_tiga);
         }
@@ -290,7 +293,10 @@ void save(char* filename, data* data) {
         tiga* current = data->tiga;
         int row = 1;
         while (current != NULL) {
-            fprintf(stream, "%d;%s;%d", row, current->aktivitas, current->biaya * 1000);
+            if (current->biaya < 1000) {
+                current->biaya = current->biaya * 1000;
+            }
+            fprintf(stream, "%d;%s;%d", row, current->aktivitas, current->biaya);
             current = current->next;
             row++;
             if (current != NULL) {
