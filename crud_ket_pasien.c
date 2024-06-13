@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "main.h"
+#include "kontrol_date.h"
 
 int isTanggalExists(data* data, const char* id, const char* tanggal) {
     dua* current = data->dua;
@@ -106,6 +107,7 @@ int getBiayaTindakan(data* data, const char* tindakan) {
 }
 
 // Fungsi buat nambahin entry ke linked list yang "dua"
+
 void addEntry(data* data) {
     char id[MAX_LEN];
     printf("Masukkan ID pasien: ");
@@ -162,9 +164,9 @@ void addEntry(data* data) {
 
     biaya_tindakan = getBiayaTindakan(data, tindakan);
 
-    // Asumsikan kontrol tanggal adalah 3 hari setelah tanggal kedatangan
+    // Calculate control date
     char kontrol[MAX_LEN];
-    // Anda perlu menambahkan logika untuk menambah 3 hari ke tanggal kedatangan dan menangani akhir bulan dan tahun kabisat.
+    add_days(tanggal_input, kontrol);
 
     int biaya_total = 140000 + biaya_tindakan;
 
@@ -193,6 +195,7 @@ void addEntry(data* data) {
 
     printf("Entry berhasil ditambahkan.\n");
 }
+
 
 
 // Fungsi update
