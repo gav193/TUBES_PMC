@@ -1,23 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define MAX_LEN 100
-
-typedef struct dataPasien {
-    char nama[MAX_LEN];
-    char alamat[MAX_LEN];
-    char kota[MAX_LEN];
-    char lok_lahir[MAX_LEN];
-    char tgl_lahir[MAX_LEN];
-    int hari;
-    int bulan; 
-    int tahun;
-    int umur;
-    char bpjs[MAX_LEN];
-    char id[MAX_LEN];
-    struct dataPasien* next;
-} satu;
+#include <locale.h>
+#include "main.h"
 
 satu *getnode() {
     satu *temp;
@@ -26,51 +11,11 @@ satu *getnode() {
     return temp;
 }
 
-//Buat list (untuk pertama kali run program)
-//Dummy, delete later for integration
-satu *createList() { 
-    //Data pasien
-    char nama[MAX_LEN]; char alamat[MAX_LEN]; char kota[MAX_LEN];
-    char lok_lahir[MAX_LEN]; char tgl_lahir[MAX_LEN];
-    int hari; int bulan; int tahun; int umur;
-    char bpjs[MAX_LEN]; char id[MAX_LEN];
-
-    //Nodes
-    satu *newNode, *start, *temp;
-    satu *getnode();
-    temp = NULL;
-    
-    printf("\n[ Pembuatan linked list ]\n");
-    printf("Berikut data pasien pertama.\n");
-
-    //Masukkan data pasien
-    newNode = getnode();
-
-    if (newNode == NULL) {
-        printf("\n Memori gagal dialokasikan!");
-        return NULL;
-    }
-
-    strcpy(newNode->nama, "Arya Kusuma Ramadhani");
-    strcpy(newNode->alamat, "Jl. Dago Asri");
-    strcpy(newNode->kota, "Kota Bandung");
-    strcpy(newNode->lok_lahir, "Kota Jakarta");
-    strcpy(newNode->tgl_lahir, "4 November 2000");
-    newNode->hari = 4; newNode->bulan = 11; newNode->tahun = 2000; newNode->umur = 23;
-    strcpy(newNode->bpjs, "012345678910");
-    strcpy(newNode->id, "K0158");
-
-    start = newNode;
-    temp = start;
-
-    return start;
-}
-
 void printData(satu *start) {
     satu *ptr;
     ptr = start;
     printf("%-25s| %-15s| %-15s| %-15s| %-15s| %-5d| %-5d| %-5d| %-5d| %-15s| %-7s|\n", 
-        ptr->nama, ptr->alamat, ptr->kota, ptr->lok_lahir, ptr->tgl_lahir,
+        ptr->nama, ptr->alamat, ptr->kota, ptr->loc_lahir, ptr->tgl_lahir,
         ptr->hari, ptr->bulan, ptr->tahun, ptr->umur,
         ptr->bpjs, ptr->id
         );
@@ -88,7 +33,7 @@ void printList(satu *start) {
     }
 
     printf("\n[ Database Pasien ]\n");
-    printf("%-3s| %-25s| %-15s| %-15s| %-15s| %-15s| %-5s| %-5s| %-5s| %-5s| %-15s| %-7s|\n",
+    printf("%-3s| %-25s| %-15s| %-15s| %-15s| %-15s| %-5s| %-5s| %-5s| %-5s| %-15s| %-7s\n",
            "No.", "Nama", "Alamat", "Kota", "Lok. Lahir", "Tanggal Lahir", "Hari", "Bln", "Thn", "Umur", "BPJS", "ID");
 
     while (ptr != NULL) {
@@ -98,8 +43,6 @@ void printList(satu *start) {
         ptr = ptr->next;
     }
 }
-
-//Menambah (V), ubah, hapus, cari data pasien (V) yang datang ke klinik X
 
 //node->id = "KX 1230123", return only 1230123 for easy ID autoassignment
 int id_number(satu *node) {
@@ -113,18 +56,19 @@ int id_number(satu *node) {
 }
 
 //Masukkan data pasien baru di akhir list
-satu *insertEnd(satu* start) {
-    satu *ptr, *temp; int id;
+void insertEnd(data *database) {
+    satu *start = database->satu;
+    satu *ptr, *temp; int id, num;
     ptr = getnode();
 
     printf("\n[ Tambah Data Pasien ]\n");
     printf("Masukkan nama pasien: "); scanf(" %[^\r\n]%*c", ptr->nama);
     printf("Masukkan alamat pasien: "); scanf(" %[^\r\n]%*c", ptr->alamat);
     printf("Masukkan kota domisili: "); scanf(" %[^\r\n]%*c", ptr->kota);
-    printf("Masukkan kota lahir pasien: "); scanf(" %[^\r\n]%*c", ptr->lok_lahir);
+    printf("Masukkan kota lahir pasien: "); scanf(" %[^\r\n]%*c", ptr->loc_lahir);
     printf("Masukkan tanggal lahir: "); scanf(" %[^\r\n]%*c", ptr->tgl_lahir);
-    // parse_tanggal(satu* start, char * filename);
-    printf("Masukkan umur pasien: "); scanf("%d", ptr->umur);
+    parse_tanggal(start, "satu.csv");
+    printf("Masukkan umur pasien: "); scanf("%d", &num); ptr->umur = num;
     printf("Masukkan nomor BPJS pasien: "); scanf(" %[^\r\n]%*c", ptr->bpjs);
 
     if (start == NULL) {
@@ -134,10 +78,11 @@ satu *insertEnd(satu* start) {
         printf("\nID Pasien: %s", start->id);
         printf("\nData Pasien telah ditambahkan!\n");
         printData(start);
-        return start;
+        database->dua = start;
     }
 
     else {
+        temp = start;
         while (temp->next != NULL) {
             temp = temp->next;
         }
@@ -149,22 +94,25 @@ satu *insertEnd(satu* start) {
         printf("\nID Pasien: %s", start->id);
         printf("\nData Pasien telah ditambahkan!\n");
         printData(start);
-        return start;
+        return database;
     }
 }
 
 //Search & print list
-void search(satu *start, char *data) {
+void search(data *database, char *data) {
+    satu *start = database->satu;
     satu *ptr;
     int found = 0;
 
     //Jika list kosong
     if (start == NULL) {
-        printf("Database kosong.\n");
+        printf("\nDatabase kosong.\n");
         return;
     }
     else {
-        printf("[ Search Pasien ]");
+        printf("\n[ Search Pasien ]\n");
+        printf("%-25s| %-15s| %-15s| %-15s| %-15s| %-5s| %-5s| %-5s| %-5s| %-15s| %-7s\n",
+           "Nama", "Alamat", "Kota", "Lok. Lahir", "Tanggal Lahir", "Hari", "Bln", "Thn", "Umur", "BPJS", "ID");
     }
 
     //Jika data head
@@ -229,7 +177,7 @@ void updateData(satu *start, char *data) {
 
     else {
         char nama[MAX_LEN]; char alamat[MAX_LEN]; char kota[MAX_LEN];
-        char lok_lahir[MAX_LEN]; char tgl_lahir[MAX_LEN];
+        char loc_lahir[MAX_LEN]; char tgl_lahir[MAX_LEN];
         int hari; int bulan; int tahun; int umur;
         char bpjs[MAX_LEN]; char id[MAX_LEN];
         int done = 0; char ans;
@@ -238,7 +186,7 @@ void updateData(satu *start, char *data) {
         printf("Masukkan nama pasien: "); scanf(" %[^\r\n]%*c", ptr->nama);
         printf("Masukkan alamat pasien: "); scanf(" %[^\r\n]%*c", ptr->alamat);
         printf("Masukkan kota domisili: "); scanf(" %[^\r\n]%*c", ptr->kota);
-        printf("Masukkan kota lahir pasien: "); scanf(" %[^\r\n]%*c", ptr->lok_lahir);
+        printf("Masukkan kota lahir pasien: "); scanf(" %[^\r\n]%*c", ptr->loc_lahir);
         printf("Masukkan tanggal lahir: "); scanf(" %[^\r\n]%*c", ptr->tgl_lahir);
         // parse_tanggal(satu* start, char * filename);
         printf("Masukkan umur pasien: "); scanf("%d", ptr->umur);
@@ -336,50 +284,50 @@ void search(satu *start, char *data) {
 }
 */
 
-int main() {
-    //input bla2
-    data data = {NULL, NULL, NULL};
-    parse("satu.csv", &data);
-    parse("dua.csv", &data);
-    parse("tiga.csv", &data);
+// int main() {
+//     //input bla2
+//     data data = {NULL, NULL, NULL};
+//     parse("satu.csv", &data);
+//     parse("dua.csv", &data);
+//     parse("tiga.csv", &data);
 
-    //opsi menu ubah aja sesuai kerapihan sama bagusnya gimana nanti
-    printf("Daftar fungsi yang dapat dilakukan:\n1. fungsi no.1\n2. fungsi no.2\n3. fungsi no.3\n4. fungsi no.4\n5. fungsi no.5\n6. fungsi no.6\nPilihan: ");
-    int choice; char string[MAX_LEN];
-    scanf("%d", &choice);
-    getchar();  // Consume newline
+//     //opsi menu ubah aja sesuai kerapihan sama bagusnya gimana nanti
+//     printf("Daftar fungsi yang dapat dilakukan:\n1. fungsi no.1\n2. fungsi no.2\n3. fungsi no.3\n4. fungsi no.4\n5. fungsi no.5\n6. fungsi no.6\nPilihan: ");
+//     int choice; char string[MAX_LEN];
+//     scanf("%d", &choice);
+//     getchar();  // Consume newline
 
-    switch (choice) {
-        case 1: //Menambah (V), ubah, hapus, cari data pasien
-            printf("Pilih operasi:\n1. Cari data pasien\n2. Tambah data pasien\n3.Ubah data pasien\n4. Hapus data pasien\nPilihan:");
-            scanf("%d", &choice);
-            {switch (choice) {
-                case 1: //search(&data); break;
-                case 2: //insertEnd(&data); break; //Tambah pasien
-                case 3: 
-                    printf("Masukkan ID pasien yang datanya ingin di-update: ");
-                    scanf(" %[^\r\n]%*c", string);
-                    //updateData(&data, string);
-                    break;
-                case 4:
-                    printf("Masukkan ID pasien yang datanya ingin dihapus: ");
-                    scanf(" %[^\r\n]%*c", string);
-                    //Update node satu (first struct in data)
-                    //satu = hapusData(satu, string);
-                    break;
-                }
-            }
-        //case 2: crud_ket_pasien(&data); break;
-        case 3: break;
-        //case 4: laporan_biaya(); break;
-        case 5: break;
-        //case 6: display_kontrol(&data); break;
-        default: printf("PILIHAN ANDA NGASAL!\n"); break; //sori gakepikiran yang lain
-    }
+//     switch (choice) {
+//         case 1: //Menambah (V), ubah, hapus, cari data pasien
+//             printf("Pilih operasi:\n1. Cari data pasien\n2. Tambah data pasien\n3.Ubah data pasien\n4. Hapus data pasien\nPilihan:");
+//             scanf("%d", &choice);
+//             {switch (choice) {
+//                 case 1: //search(&data); break;
+//                 case 2: //insertEnd(&data); break; //Tambah pasien
+//                 case 3: 
+//                     printf("Masukkan ID pasien yang datanya ingin di-update: ");
+//                     scanf(" %[^\r\n]%*c", string);
+//                     //updateData(&data, string);
+//                     break;
+//                 case 4:
+//                     printf("Masukkan ID pasien yang datanya ingin dihapus: ");
+//                     scanf(" %[^\r\n]%*c", string);
+//                     //Update node satu (first struct in data)
+//                     //satu = hapusData(satu, string);
+//                     break;
+//                 }
+//             }
+//         //case 2: crud_ket_pasien(&data); break;
+//         case 3: break;
+//         //case 4: laporan_biaya(); break;
+//         case 5: break;
+//         //case 6: display_kontrol(&data); break;
+//         default: printf("PILIHAN ANDA NGASAL!\n"); break; //sori gakepikiran yang lain
+//     }
     
-    save("satu.csv", &data);
-    save("dua.csv", &data);
-    save("tiga.csv", &data);
+//     save("satu.csv", &data);
+//     save("dua.csv", &data);
+//     save("tiga.csv", &data);
 
-    return 0;
-}
+//     return 0;
+// }
