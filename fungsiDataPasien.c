@@ -11,10 +11,8 @@ satu *getnode() {
     return temp;
 }
 
-void printData(satu *start) {
-    satu *ptr;
-    ptr = start;
-    printf("%-25s| %-15s| %-15s| %-15s| %-15s| %-5d| %-5d| %-5d| %-5d| %-15s| %-7s|\n", 
+void printData(satu *ptr) {
+    printf("%-25s| %-15s| %-18s| %-18s| %-18s| %-4d| %-4d| %-4d| %-4d| %-11s| %s\n", 
         ptr->nama, ptr->alamat, ptr->kota, ptr->loc_lahir, ptr->tgl_lahir,
         ptr->hari, ptr->bulan, ptr->tahun, ptr->umur,
         ptr->bpjs, ptr->id
@@ -33,8 +31,9 @@ void printList(satu *start) {
     }
 
     printf("\n[ Database Pasien ]\n");
-    printf("%-3s| %-25s| %-15s| %-15s| %-15s| %-15s| %-5s| %-5s| %-5s| %-5s| %-15s| %-7s\n",
-           "No.", "Nama", "Alamat", "Kota", "Lok. Lahir", "Tanggal Lahir", "Hari", "Bln", "Thn", "Umur", "BPJS", "ID");
+    //%-25s| %-15s| %-18s| %-18s| %-18s| %-4d| %-4d| %-4d| %-4d| %-11s| %s
+    printf("%-3s| %-25s| %-15s| %-18s| %-18s| %-18s| %-4s| %-4s| %-4s| %-4s| %-11s| %s\n",
+           "No.", "Nama", "Alamat", "Kota", "Lok. Lahir", "Tanggal Lahir", "Hr", "Bln", "Thn", "Um", "BPJS", "ID");
 
     while (ptr != NULL) {
         printf("%-3d| ", num);
@@ -214,8 +213,8 @@ void search(data *database, char *data) {
 
     else {
         printf("\n[ Search Pasien ]\n");
-        printf("%-25s| %-15s| %-15s| %-15s| %-15s| %-5s| %-5s| %-5s| %-5s| %-15s| %-7s\n",
-           "Nama", "Alamat", "Kota", "Lok. Lahir", "Tanggal Lahir", "Hari", "Bln", "Thn", "Umur", "BPJS", "ID");
+        printf("%-25s| %-15s| %-18s| %-18s| %-18s| %-4s| %-4s| %-4s| %-4s| %-11s| %s\n",
+           "Nama", "Alamat", "Kota", "Lok. Lahir", "Tanggal Lahir", "Hr", "Bln", "Thn", "Um", "BPJS", "ID");
     }
 
     //Jika data head
