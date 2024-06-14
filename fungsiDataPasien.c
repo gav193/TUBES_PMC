@@ -47,6 +47,7 @@ void printList(satu *start) {
 //node->id = "KX 1230123", return only 1230123 for easy ID autoassignment
 int id_number(satu *node) {
     char str[11]; char *letters; int numbers;
+    strcpy(str, node->id);
 
     // Use strtok to split the string
     letters = strtok(str, " "); //Just in case it's needed
@@ -55,8 +56,82 @@ int id_number(satu *node) {
     return numbers;
 }
 
+//Konversi tanggal untuk node satu
+void convertTanggalSatu(satu *node){
+    char* token;
+    char temp_tgl[MAX_LEN];
+    satu* new_satu = node;
+    
+    strcpy(temp_tgl, new_satu->tgl_lahir);
+    int len = strlen(temp_tgl);
+    char separator[2] = " ";
+    // Detect separator
+    for (int i = 0; i < len; i++) {
+        if (temp_tgl[i] == '-') {
+            separator[0] = '-';
+            break;
+        }
+    }
+
+    // Parse day
+    token = strtok(temp_tgl, separator);
+    if (token) {
+        new_satu->hari = atoi(token);
+    } else {
+        printf("Format tanggal tidak valid: %s\n", new_satu->tgl_lahir);
+        return;
+    }
+
+    // Parse month
+    token = strtok(NULL, separator);
+    if (token) {
+        if (strcmp(token, "Januari") == 0 || strcmp(token, "januari") == 0 || strcmp(token, "Jan") == 0 || strcmp(token, "jan") == 0) {
+            new_satu->bulan = 1;
+        } else if (strcmp(token, "Februari") == 0 || strcmp(token, "februari") == 0 || strcmp(token, "Feb") == 0 || strcmp(token, "feb") == 0) {
+            new_satu->bulan = 2;
+        } else if (strcmp(token, "Maret") == 0 || strcmp(token, "maret") == 0 || strcmp(token, "Mar") == 0 || strcmp(token, "mar") == 0) {
+            new_satu->bulan = 3;
+        } else if (strcmp(token, "April") == 0 || strcmp(token, "april") == 0 || strcmp(token, "Apr") == 0 || strcmp(token, "apr") == 0) {
+            new_satu->bulan = 4;
+        } else if (strcmp(token, "Mei") == 0 || strcmp(token, "mei") == 0) {
+            new_satu->bulan = 5;
+        } else if (strcmp(token, "Juni") == 0 || strcmp(token, "juni") == 0 || strcmp(token, "Jun") == 0 || strcmp(token, "jun") == 0) {
+            new_satu->bulan = 6;
+        } else if (strcmp(token, "Juli") == 0 || strcmp(token, "juli") == 0 || strcmp(token, "Jul") == 0 || strcmp(token, "jul") == 0) {
+            new_satu->bulan = 7;
+        } else if (strcmp(token, "Agustus") == 0 || strcmp(token, "agustus") == 0 || strcmp(token, "Aug") == 0 || strcmp(token, "aug") == 0) {
+            new_satu->bulan = 8;
+        } else if (strcmp(token, "September") == 0 || strcmp(token, "september") == 0 || strcmp(token, "Sep") == 0 || strcmp(token, "sep") == 0) {
+            new_satu->bulan = 9;
+        } else if (strcmp(token, "Oktober") == 0 || strcmp(token, "oktober") == 0 || strcmp(token, "Okt") == 0 || strcmp(token, "okt") == 0) {
+            new_satu->bulan = 10;
+        } else if (strcmp(token, "November") == 0 || strcmp(token, "november") == 0 || strcmp(token, "Nov") == 0 || strcmp(token, "nov") == 0) {
+            new_satu->bulan = 11;
+        } else if (strcmp(token, "Desember") == 0 || strcmp(token, "desember") == 0 || strcmp(token, "Des") == 0 || strcmp(token, "des") == 0) {
+            new_satu->bulan = 12;
+        } else {
+            printf("Ditemukan bulan yang tidak valid : %s\n", new_satu->tgl_lahir);
+            return;
+        }
+    } else {
+        printf("Format tanggal tidak valid: %s\n", new_satu->tgl_lahir);
+        return;
+    }
+
+    token = strtok(NULL, separator);
+    if (token) { 
+        int temp = atoi(token); 
+        new_satu->tahun = temp;
+    } else { 
+        printf("Format tanggal tidak valid: %s\n", new_satu->tgl_lahir);
+        return;
+    }
+    node = new_satu;
+}
+
 //Masukkan data pasien baru di akhir list
 void insertEnd(data *database) {
+    satu *start = database->satu;
     satu *ptr, *temp; 
     int id, num;
     ptr = getnode();
@@ -72,43 +147,53 @@ void insertEnd(data *database) {
     printf("Masukkan kota domisili: "); scanf(" %[^\r\n]%*c", ptr->kota);
     printf("Masukkan kota lahir pasien: "); scanf(" %[^\r\n]%*c", ptr->loc_lahir);
     printf("Masukkan tanggal lahir: "); scanf(" %[^\r\n]%*c", ptr->tgl_lahir);
+    
+    //debugging
+    //printf("%s; %s; %s; %s; %s", ptr->nama, ptr->alamat, ptr->kota, ptr->loc_lahir, ptr->tgl_lahir);
+
     ptr->hari = 0; ptr->bulan = 0; ptr->tahun = 0;
     printf("Masukkan umur pasien: "); scanf("%d", &num); ptr->umur = num;
     printf("Masukkan nomor BPJS pasien: "); scanf(" %[^\r\n]%*c", ptr->bpjs);
+    convertTanggalSatu(ptr);
 
+    printf("ptr:\n");
     printData(ptr);
     
-    if (database->satu == NULL) {
+    if (start == NULL) {
         //Assign otomatis ID Pasien
         strcpy(ptr->id, "KX 1230001");
         printf("\nID Pasien: %s", ptr->id);
 
         //Update database
-        database->satu = ptr;        
+        start = ptr;
+        database->satu = start;        
         printf("\nData Pasien telah ditambahkan!\n");
-        //Reparse tanggal
-        parse_tanggal(database->satu, "satu.csv");    
+
         printList(database->satu);
     }
 
     else {
         //Find last node
-        temp = database->satu;
+        temp = start;
         while (temp->next != NULL) {
             temp = temp->next;
         }
         //Parse last node's ID to turn into the format KX 1230123 (KX - integer) and add one
+        printf("temp:\n");
+        printData(temp);
+        
         id = id_number(temp) + 1;
+        printf("id of temp: %d", id);
         //Put it in ptr
         sprintf(ptr->id, "KX %d", id);
-        ptr->next = NULL;
         printf("\nID Pasien: %s", ptr->id);
 
         //Add new last node by copying ptr to temp->next
         temp->next = ptr;
+        ptr->next = NULL;
 
         //Update the real database->satu
-        database->satu = temp;
+        database->satu = start;
 
         printf("\nData Pasien telah ditambahkan!\n");
         printList(database->satu);
