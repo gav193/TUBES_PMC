@@ -317,39 +317,46 @@ void updateData(data *database, char *data) {
 }
 
 //Hapus data pasien berdasarkan ID
-satu *hapusData(satu *start, char *data) {
-    satu *temp, *ptr;
+void hapusData(data *database, char *data) {
+    satu *start = database->satu;
+    satu *temp, *ptr; int found = 0;
 
     //Jika list kosong
     if (start == NULL) {
         printf("Database kosong!\n");
-        return NULL;
+        return;
     }
 
-    //Jika data head
-    if (strcmp(start->id, data) == 0) {
-        temp = start;
-        start = start->next;
-        free(temp);
-        return start;
-    }
-
-    //Jika data bukan node start/head
-    ptr = start;
-    while (ptr->next != NULL) {
-        if (strcmp(ptr->next->id, data) == 0) {
-            temp = ptr->next;
-            ptr->next = temp->next;
+    else {
+        //Jika data head
+        if (strcmp(start->id, data) == 0) {
+            temp = start;
+            start = start->next;
             free(temp);
-            return start;
+            database->satu = start;
+            found = 1;
         }
-        ptr = ptr->next;
+
+        //Jika data bukan node start/head
+        else {
+            ptr = start;
+            while (ptr->next != NULL) {
+                if (strcmp(ptr->next->id, data) == 0) {
+                    found = 1;
+                    temp = ptr->next;
+                    ptr->next = temp->next;
+                    free(temp);
+                    break;
+                }
+                ptr = ptr->next;
+            }
+        }
     }
 
     //Jika data tidak ditemukan
-    printf("Data dengan ID %s tidak ditemukan", data);
-    return start;
+    if (!found) {printf("Data dengan ID %s tidak ditemukan", data);}
 }
+
 
 //Informasi pasien dan riwayat medisnya di klinik X
 //Input nama/ID pasien -> iterasi ke dataset dua, print every diagnosis of ID that matches
