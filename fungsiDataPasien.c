@@ -57,9 +57,14 @@ int id_number(satu *node) {
 
 //Masukkan data pasien baru di akhir list
 void insertEnd(data *database) {
-    satu *start = database->satu;
-    satu *ptr, *temp; int id, num;
+    satu *ptr, *temp; 
+    int id, num;
     ptr = getnode();
+
+    if (ptr == NULL) {
+        printf("Memory allocation failed.\n");
+        return;
+    }
 
     printf("\n[ Tambah Data Pasien ]\n");
     printf("Masukkan nama pasien: "); scanf(" %[^\r\n]%*c", ptr->nama);
@@ -67,34 +72,46 @@ void insertEnd(data *database) {
     printf("Masukkan kota domisili: "); scanf(" %[^\r\n]%*c", ptr->kota);
     printf("Masukkan kota lahir pasien: "); scanf(" %[^\r\n]%*c", ptr->loc_lahir);
     printf("Masukkan tanggal lahir: "); scanf(" %[^\r\n]%*c", ptr->tgl_lahir);
-    parse_tanggal(start, "satu.csv");
+    ptr->hari = 0; ptr->bulan = 0; ptr->tahun = 0;
     printf("Masukkan umur pasien: "); scanf("%d", &num); ptr->umur = num;
     printf("Masukkan nomor BPJS pasien: "); scanf(" %[^\r\n]%*c", ptr->bpjs);
 
-    if (start == NULL) {
-        start = ptr;
+    printData(ptr);
+    
+    if (database->satu == NULL) {
         //Assign otomatis ID Pasien
-        strcpy(start->id, "KX 1230001");
-        printf("\nID Pasien: %s", start->id);
+        strcpy(ptr->id, "KX 1230001");
+        printf("\nID Pasien: %s", ptr->id);
+
+        //Update database
+        database->satu = ptr;        
         printf("\nData Pasien telah ditambahkan!\n");
-        printData(start);
-        database->dua = start;
+        //Reparse tanggal
+        parse_tanggal(database->satu, "satu.csv");    
+        printList(database->satu);
     }
 
     else {
-        temp = start;
+        //Find last node
+        temp = database->satu;
         while (temp->next != NULL) {
             temp = temp->next;
         }
         //Parse last node's ID to turn into the format KX 1230123 (KX - integer) and add one
         id = id_number(temp) + 1;
-        temp->next = ptr;
+        //Put it in ptr
         sprintf(ptr->id, "KX %d", id);
         ptr->next = NULL;
-        printf("\nID Pasien: %s", start->id);
+        printf("\nID Pasien: %s", ptr->id);
+
+        //Add new last node by copying ptr to temp->next
+        temp->next = ptr;
+
+        //Update the real database->satu
+        database->satu = temp;
+
         printf("\nData Pasien telah ditambahkan!\n");
-        printData(start);
-        return database;
+        printList(database->satu);
     }
 }
 
@@ -109,6 +126,7 @@ void search(data *database, char *data) {
         printf("\nDatabase kosong.\n");
         return;
     }
+
     else {
         printf("\n[ Search Pasien ]\n");
         printf("%-25s| %-15s| %-15s| %-15s| %-15s| %-5s| %-5s| %-5s| %-5s| %-15s| %-7s\n",
