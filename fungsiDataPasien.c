@@ -241,7 +241,8 @@ void search(data *database, char *data) {
 
 //Search & print list berdasarkan id
 //Kalo mau berdasarkan nama atau bpjs bisa tambahin 'type' di switch case
-void updateData(satu *start, char *data) {
+void updateData(data *database, char *data) {
+    satu *start = database->satu;
     satu *ptr;
     int found = 0;
 
@@ -278,21 +279,27 @@ void updateData(satu *start, char *data) {
     }
 
     else {
-        char nama[MAX_LEN]; char alamat[MAX_LEN]; char kota[MAX_LEN];
-        char loc_lahir[MAX_LEN]; char tgl_lahir[MAX_LEN];
-        int hari; int bulan; int tahun; int umur;
-        char bpjs[MAX_LEN]; char id[MAX_LEN];
-        int done = 0; char ans;
+        int done = 0; char ans, pil;
 
         while (!done) {
+        printf("Pilih data yang ingin di-update:\n1. Nama pasien\n2. Alamat pasien\n3. Kota domisili pasien\n4. Kota lahir pasien\n5. Tanggal lahir pasien\n6. Umur pasien\n7. Nomor BPJS pasien\n8.Selesai\n");
+        printf("Pilihan: "); scanf("%d", &pil);
+        switch (pil) {
+            case 1:
+            
+
+        }
         printf("Masukkan nama pasien: "); scanf(" %[^\r\n]%*c", ptr->nama);
         printf("Masukkan alamat pasien: "); scanf(" %[^\r\n]%*c", ptr->alamat);
         printf("Masukkan kota domisili: "); scanf(" %[^\r\n]%*c", ptr->kota);
         printf("Masukkan kota lahir pasien: "); scanf(" %[^\r\n]%*c", ptr->loc_lahir);
         printf("Masukkan tanggal lahir: "); scanf(" %[^\r\n]%*c", ptr->tgl_lahir);
         // parse_tanggal(satu* start, char * filename);
-        printf("Masukkan umur pasien: "); scanf("%d", ptr->umur);
+
+        ptr->hari = 0; ptr->bulan = 0; ptr->tahun = 0;
+        printf("Masukkan umur pasien: "); scanf("%d", &ptr->umur);
         printf("Masukkan nomor BPJS pasien: "); scanf(" %[^\r\n]%*c", ptr->bpjs);
+        convertTanggalSatu(ptr);
 
         printf("\nData pasien sudah diperbarui!\n");
         printData(ptr);
