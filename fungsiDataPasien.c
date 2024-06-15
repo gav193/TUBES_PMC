@@ -213,7 +213,7 @@ void search(data *database, char *data) {
 
     else {
         printf("\n[ Search Pasien ]\n");
-        printf("%-25s| %-15s| %-18s| %-18s| %-18s| %-4s| %-4s| %-4s| %-4s| %-11s| %s\n",
+        printf("%-25s| %-15s| %-20s| %-20s| %-18s| %-4s| %-4s| %-4s| %-4s| %-11s| %s\n",
            "Nama", "Alamat", "Kota", "Lok. Lahir", "Tanggal Lahir", "Hr", "Bln", "Thn", "Um", "BPJS", "ID");
     }
 
@@ -279,28 +279,30 @@ void updateData(data *database, char *data) {
     }
 
     else {
-        int done = 0; char ans, pil;
+        int done = 0; char ans, pil = 0;
 
         while (!done) {
         printf("Pilih data yang ingin di-update:\n1. Nama pasien\n2. Alamat pasien\n3. Kota domisili pasien\n4. Kota lahir pasien\n5. Tanggal lahir pasien\n6. Umur pasien\n7. Nomor BPJS pasien\n8.Selesai\n");
-        printf("Pilihan: "); scanf("%d", &pil);
-        switch (pil) {
-            case 1:
-            
-
-        }
-        printf("Masukkan nama pasien: "); scanf(" %[^\r\n]%*c", ptr->nama);
-        printf("Masukkan alamat pasien: "); scanf(" %[^\r\n]%*c", ptr->alamat);
-        printf("Masukkan kota domisili: "); scanf(" %[^\r\n]%*c", ptr->kota);
-        printf("Masukkan kota lahir pasien: "); scanf(" %[^\r\n]%*c", ptr->loc_lahir);
-        printf("Masukkan tanggal lahir: "); scanf(" %[^\r\n]%*c", ptr->tgl_lahir);
-        // parse_tanggal(satu* start, char * filename);
-
-        ptr->hari = 0; ptr->bulan = 0; ptr->tahun = 0;
-        printf("Masukkan umur pasien: "); scanf("%d", &ptr->umur);
-        printf("Masukkan nomor BPJS pasien: "); scanf(" %[^\r\n]%*c", ptr->bpjs);
-        convertTanggalSatu(ptr);
-
+        do {
+            printf("Pilihan: "); scanf("%d", &pil);
+            switch (pil) {
+                case 1: printf("Masukkan nama pasien: "); scanf(" %[^\r\n]%*c", ptr->nama); break;
+                case 2: printf("Masukkan alamat pasien: "); scanf(" %[^\r\n]%*c", ptr->alamat); break;
+                case 3: printf("Masukkan kota domisili: "); scanf(" %[^\r\n]%*c", ptr->kota); break;
+                case 4: printf("Masukkan kota lahir pasien: "); scanf(" %[^\r\n]%*c", ptr->loc_lahir); break;
+                case 5: 
+                    printf("Masukkan tanggal lahir: "); scanf(" %[^\r\n]%*c", ptr->tgl_lahir);
+                    ptr->hari = 0; ptr->bulan = 0; ptr->tahun = 0;
+                    convertTanggalSatu(ptr); break;
+                case 6: printf("Masukkan umur pasien: "); scanf("%d", &ptr->umur); break;
+                case 7: printf("Masukkan nomor BPJS pasien: "); scanf(" %[^\r\n]%*c", ptr->bpjs); break;
+                case 8: break;
+                default:
+                    printf("Input tidak valid, kembali ke halaman awal\n");
+                    break;
+                }
+            } while (pil != 8);
+        
         printf("\nData pasien sudah diperbarui!\n");
         printData(ptr);
 
