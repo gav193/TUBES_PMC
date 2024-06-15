@@ -357,93 +357,86 @@ void hapusData(data *database, char *data) {
     if (!found) {printf("Data dengan ID %s tidak ditemukan", data);}
 }
 
-
 //Informasi pasien dan riwayat medisnya di klinik X
 //Input nama/ID pasien -> iterasi ke dataset dua, print every diagnosis of ID that matches
 //void riwayatPasien (char ), modif dari search
 
-/*
 //Search & print list
-void search(satu *start, char *data) {
-    satu *ptr;
-    int found = 0;
+void riwayatPasien(data *database, char *data) {
+    satu *sSatu = database->satu; 
+    dua *sDua = database->dua;
+    satu *ptrSatu; dua *ptrDua;
+    int found = 0, exist = 0, num = 1;
 
     //Jika list kosong
-    if (start == NULL) {
+    if (sSatu == NULL || sDua == NULL) {
         printf("Database kosong.\n");
         return;
     }
+
     else {
-        printf("[ Search Pasien ]");
+        printf("\n[ Riwayat Berobat Pasien ]\n");
     }
 
     //Jika data head
-    if (strcmp(start->id, data) == 0) {
-        printData(start);
-        found = 1;
+    if (strcmp(sSatu->id, data) == 0) {
+        printf("Data Pasien:\n");
+        printf("%-25s| %-15s| %-18s| %-4s| %-11s| %s\n",
+               "Nama", "Alamat", "Tanggal Lahir", "Um", "BPJS", "ID");
+        printf("%-25s| %-15s| %-18s| %-4d| %-11s| %s\n",
+                sSatu->nama, sSatu->alamat, sSatu->tgl_lahir, 
+                sSatu->umur, sSatu->bpjs, sSatu->id);
+        exist = 1;
     }
 
     //Jika data bukan node start/head
-    ptr = start;
-    while (ptr->next != NULL) {
-        ptr = ptr->next;
-        if (strcmp(ptr->id, data) == 0) {
-            printData(ptr);
-            found = 1;
+    ptrSatu = sSatu;
+    while (ptrSatu->next != NULL) {
+        ptrSatu = ptrSatu->next;
+        if (strcmp(ptrSatu->id, data) == 0) {
+            printf("Data Pasien:\n");
+            printf("%-25s| %-15s| %-18s| %-4s| %-11s| %s\n",
+               "Nama", "Alamat", "Tanggal Lahir", "Um", "BPJS", "ID");
+            printf("%-25s| %-15s| %-18s| %-4d| %-11s| %s\n",
+                ptrSatu->nama, ptrSatu->alamat, ptrSatu->tgl_lahir, 
+                ptrSatu->umur, ptrSatu->bpjs, ptrSatu->id);
+            exist = 1;
+            break;
         }
     }
 
     //Jika data tidak ditemukan
-    if (!found) {
-        printf("Data dengan ID %s tidak ditemukan.\n", data);
+    if (!exist) {
+        printf("Data pasien dengan ID %s tidak ditemukan.\n", data);
+        return;
+    }
+
+    //Else search di struct dua
+    else {
+        printf("\nRiwayat Berobat Pasien:\n");
+        printf("No. | %-18s| %-15s| %-18s| %-18s\n",
+               "Tanggal", "Diagnosis", "Tindakan", "Kontrol");
+
+        //Jika data head
+        if (strcmp(sDua->id, data) == 0) {
+            printf("%-4d| %-18s| %-15s| %-18s| %-18s\n",
+                num, sDua->tanggal, sDua->diagnosis, sDua->tindakan, sDua->kontrol);
+            found = 1; num ++;
+        }
+
+        //Jika data selain head
+        ptrDua = sDua;
+        while (ptrDua->next != NULL) {
+            ptrDua = ptrDua->next;
+            if (strcmp(ptrDua->id, data) == 0) {
+                printf("%-4d| %-18s| %-15s| %-18s| %-18s\n",
+                num, ptrDua->tanggal, ptrDua->diagnosis, ptrDua->tindakan, ptrDua->kontrol);
+                found = 1; num ++;
+            }
+        }
+        
+        if (!found) {
+            printf("Pasien dengan ID %s tidak memiliki riwayat berobat.\n", data);
+        }
     }
 }
-*/
-
-// int main() {
-//     //input bla2
-//     data data = {NULL, NULL, NULL};
-//     parse("satu.csv", &data);
-//     parse("dua.csv", &data);
-//     parse("tiga.csv", &data);
-
-//     //opsi menu ubah aja sesuai kerapihan sama bagusnya gimana nanti
-//     printf("Daftar fungsi yang dapat dilakukan:\n1. fungsi no.1\n2. fungsi no.2\n3. fungsi no.3\n4. fungsi no.4\n5. fungsi no.5\n6. fungsi no.6\nPilihan: ");
-//     int choice; char string[MAX_LEN];
-//     scanf("%d", &choice);
-//     getchar();  // Consume newline
-
-//     switch (choice) {
-//         case 1: //Menambah (V), ubah, hapus, cari data pasien
-//             printf("Pilih operasi:\n1. Cari data pasien\n2. Tambah data pasien\n3.Ubah data pasien\n4. Hapus data pasien\nPilihan:");
-//             scanf("%d", &choice);
-//             {switch (choice) {
-//                 case 1: //search(&data); break;
-//                 case 2: //insertEnd(&data); break; //Tambah pasien
-//                 case 3: 
-//                     printf("Masukkan ID pasien yang datanya ingin di-update: ");
-//                     scanf(" %[^\r\n]%*c", string);
-//                     //updateData(&data, string);
-//                     break;
-//                 case 4:
-//                     printf("Masukkan ID pasien yang datanya ingin dihapus: ");
-//                     scanf(" %[^\r\n]%*c", string);
-//                     //Update node satu (first struct in data)
-//                     //satu = hapusData(satu, string);
-//                     break;
-//                 }
-//             }
-//         //case 2: crud_ket_pasien(&data); break;
-//         case 3: break;
-//         //case 4: laporan_biaya(); break;
-//         case 5: break;
-//         //case 6: display_kontrol(&data); break;
-//         default: printf("PILIHAN ANDA NGASAL!\n"); break; //sori gakepikiran yang lain
-//     }
-    
-//     save("satu.csv", &data);
-//     save("dua.csv", &data);
-//     save("tiga.csv", &data);
-
-//     return 0;
-// }
