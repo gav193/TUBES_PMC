@@ -18,7 +18,7 @@ int main() {
     //opsi menu ubah aja sesuai kerapihan sama bagusnya gimana nanti
     int choice = 0; 
     do {
-        printf("Daftar fungsi yang dapat dilakukan:\n1. Daftar Pasien\n2. Daftar Riwayat\n3. Cari Riwayat Pasien\n4. fungsi no.4\n5. fungsi no.5\n6. fungsi no.6\nPilihan: ");
+        printf("Daftar fungsi yang dapat dilakukan:\n1. Daftar Pasien\n2. Daftar Riwayat\n3. Cari Riwayat Pasien\n4. fungsi no.4\n5. fungsi no.5\n6. fungsi no.6\n7. Exit program\nPilihan: ");
         char string[MAX_LEN];
         scanf("%d", &choice);
         getchar();  // Consume newline
