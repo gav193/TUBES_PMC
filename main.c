@@ -16,9 +16,10 @@ int main() {
     parse("tiga.csv", &data);
 
     //opsi menu ubah aja sesuai kerapihan sama bagusnya gimana nanti
+    int choice = 0; 
     do {
-        printf("Daftar fungsi yang dapat dilakukan:\n1. Daftar Pasien\n2. Daftar Riwayat\n3. fungsi no.3\n4. fungsi no.4\n5. fungsi no.5\n6. fungsi no.6\nPilihan: ");
-        int choice; char string[MAX_LEN];
+        printf("Daftar fungsi yang dapat dilakukan:\n1. Daftar Pasien\n2. Daftar Riwayat\n3. Cari Riwayat Pasien\n4. fungsi no.4\n5. fungsi no.5\n6. fungsi no.6\n7. Exit program\nPilihan: ");
+        char string[MAX_LEN];
         scanf("%d", &choice);
         getchar();  // Consume newline
     
@@ -73,7 +74,6 @@ int main() {
             default: printf("Pilihan tidak valid, ulangi input!\n"); break; //sori gakepikiran yang lain
         }
     } while (choice != 7);
-    
 
     return 0;
 }
