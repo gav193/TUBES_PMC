@@ -56,7 +56,11 @@ int main() {
                     }
                 } break;
             case 2: crud_ket_pasien(&data); break;
-            case 3: break;
+            case 3: 
+                printf("Masukkan ID pasien: ");
+                scanf(" %[^\r\n]%*c", string);
+                riwayatPasien(&data, string);
+                break;
             case 4: laporan_keuangan(); break;
             case 5: break;
             case 6: display_kontrol(&data); break;
