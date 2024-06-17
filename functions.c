@@ -70,7 +70,7 @@ void parse_tanggal(dua* node) {
     if (token) {
         new_dua->hari = atoi(token);
     } else {
-        printf("Format tanggal tidak valid(%s): %s\n",filename, new_dua->tanggal);
+        printf("Format tanggal tidak valid: %s\n", new_dua->tanggal);
         return;
     }
 
@@ -102,11 +102,11 @@ void parse_tanggal(dua* node) {
         } else if (strcmp(token, "Desember") == 0 || strcmp(token, "desember") == 0 || strcmp(token, "Des") == 0 || strcmp(token, "des") == 0) {
             new_dua->bulan = 12;
         } else {
-            printf("Ditemukan bulan yang tidak valid(%s) : %s\n",filename, new_dua->tanggal);
+            printf("Ditemukan bulan yang tidak valid : %s\n", new_dua->tanggal);
             return;
         }
     } else {
-        printf("Format tanggal tidak valid(%s): %s\n",filename, new_dua->tanggal);
+        printf("Format tanggal tidak valid: %s\n", new_dua->tanggal);
         return;
     }
     token = strtok(NULL, separator);
@@ -117,7 +117,7 @@ void parse_tanggal(dua* node) {
         }   
         new_dua->tahun = temp;
     } else { 
-        printf("Format tanggal tidak valid(%s): %s\n",filename, new_dua->tanggal);
+        printf("Format tanggal tidak valid: %s\n", new_dua->tanggal);
         return;
     }
 }
