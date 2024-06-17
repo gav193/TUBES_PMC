@@ -1,5 +1,5 @@
-#ifndef DATA_STRUCTURES_H
-#define DATA_STRUCTURES_H
+#ifndef MAIN_H
+#define MAIN_H
 
 #define MAX_LEN 100
 #define MAX_YEAR 2024 // Tahun hingga sampai 2024
@@ -39,29 +39,29 @@ typedef struct tiga {
     struct tiga* next;
 } tiga;
 
-typedef struct data {
+typedef struct Data {
     struct satu* satu;
     struct dua* dua;
     struct tiga* tiga;
-} data;
+} Data;
 
 // Function prototypes
-void insert(data* data, char* filename, void* new_node);
+void insert(Data* data, char* filename, void* new_node);
 void remove_newline(char* str);
 void parse_tanggal(dua* node);
-void parse(char* filename, data* data);
-void save(char* filename, data* data);
-void print_satu(data* data);
-void print_dua(data* data);
-void print_tiga(data* data);
-void insertEnd(data *database);
-void search(data *database, char *data);
-void updateData(data *database, char *data);
-void hapusData(data *database, char *data);
-void riwayatPasien(data *database, char *data);
-void crud_ket_pasien(data* data);
-void display_kontrol(data* data);
+void parse(char* filename, Data* data);
+void save(char* filename, Data* data);
+void print_satu(Data* data);
+void print_dua(Data* data);
+void print_tiga(Data* data);
+void insertEnd(Data *database);
+void search(Data *database, char *data);
+void updateData(Data *database, char *data);
+void hapusData(Data *database, char *data);
+void riwayatPasien(Data *database, char *data);
+void crud_ket_pasien(Data* data);
+void display_kontrol(Data* data);
 void laporan_keuangan();
-void report_disease_frequency(data* data);
+void report_disease_frequency(Data* data);
 
 #endif
