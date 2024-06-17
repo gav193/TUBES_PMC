@@ -147,16 +147,10 @@ void insertEnd(data *database) {
     printf("Masukkan kota lahir pasien: "); scanf(" %[^\r\n]%*c", ptr->loc_lahir);
     printf("Masukkan tanggal lahir: "); scanf(" %[^\r\n]%*c", ptr->tgl_lahir);
     
-    //debugging
-    //printf("%s; %s; %s; %s; %s", ptr->nama, ptr->alamat, ptr->kota, ptr->loc_lahir, ptr->tgl_lahir);
-
     ptr->hari = 0; ptr->bulan = 0; ptr->tahun = 0;
     printf("Masukkan umur pasien: "); scanf("%d", &num); ptr->umur = num;
     printf("Masukkan nomor BPJS pasien: "); scanf(" %[^\r\n]%*c", ptr->bpjs);
     convertTanggalSatu(ptr);
-
-    printf("ptr:\n");
-    printData(ptr);
     
     if (start == NULL) {
         //Assign otomatis ID Pasien
@@ -178,11 +172,8 @@ void insertEnd(data *database) {
             temp = temp->next;
         }
         //Parse last node's ID to turn into the format KX 1230123 (KX - integer) and add one
-        printf("temp:\n");
-        printData(temp);
-        
         id = id_number(temp) + 1;
-        printf("id of temp: %d", id);
+       
         //Put it in ptr
         sprintf(ptr->id, "KX %d", id);
         printf("\nID Pasien: %s", ptr->id);
