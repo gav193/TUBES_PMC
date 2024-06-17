@@ -270,6 +270,35 @@ void parse(char* filename, Data* data) {
             count++;
         }
     }
+void freeData(Data *data) {
+    // Free linked list satu
+    satu *current_satu = data->satu;
+    while (current_satu != NULL) {
+        satu *temp = current_satu;
+        current_satu = current_satu->next;
+        free(temp);
+    }
+
+    // Free linked list dua
+    dua *current_dua = data->dua;
+    while (current_dua != NULL) {
+        dua *temp = current_dua;
+        current_dua = current_dua->next;
+        free(temp);
+    }
+
+    // Free linked list tiga
+    tiga *current_tiga = data->tiga;
+    while (current_tiga != NULL) {
+        tiga *temp = current_tiga;
+        current_tiga = current_tiga->next;
+        free(temp);
+    }
+
+    data->satu = NULL;
+    data->dua = NULL;
+    data->tiga = NULL;
+}
 
 // Fitur 1 (Data Pasien)
 satu *getnode() {
