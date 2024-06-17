@@ -169,7 +169,10 @@ void parse(char* filename, Data* data) {
             val = strtok(NULL, ";");
             tiga* new_tiga = (tiga*)malloc(sizeof(tiga));
             strcpy(new_tiga->aktivitas, val); val = strtok(NULL, ";");
-            new_tiga->biaya = atoi(val);
+            if (new_tiga->biaya < 1000) {
+                new_tiga->biaya = atoi(val) * 1000;
+            }
+            else {new_tiga->biaya = atoi(val); }
             new_tiga->next = NULL;
             insert(data, filename, new_tiga);
         }
