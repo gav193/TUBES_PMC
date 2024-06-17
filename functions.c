@@ -1145,6 +1145,50 @@ void crud_ket_pasien(Data* data) {
 }
 
 // Fitur 3 (Informasi Pasien dan Riwayat Medis)
+void tampil_medis(Data* data) { // Fungsi substitusi sementara (Gavin)
+    char temp_id[MAX_LEN];
+    printf("Input ID untuk mencari data dan riwayat medis : ");
+    scanf(" %99[^\n]", temp_id);
+    satu* current_satu = data->satu; // Start from the head of the linked list of patients
+    dua* current_dua = data -> dua;
+    char edit_id[MAX_LEN];
+    int found = 0;
+    while (current_satu != NULL) {
+        if (strcmp(current_satu->id, temp_id) == 0) { // Compare the IDs
+            // Found the patient, print their details
+            found = 1;
+            printf("Data pasien ditemukan:\n");
+            printf("Nama: %s\n", current_satu->nama);
+            printf("Alamat: %s\n", current_satu->alamat);
+            printf("Kota: %s\n", current_satu->kota);
+            printf("Tempat lahir: %s\n", current_satu->loc_lahir);
+            printf("Tanggal lahir: %s\n", current_satu->tgl_lahir);
+            printf("Umur: %d\n", current_satu->umur);
+            printf("Nomor BPJS: %s\n", current_satu->bpjs);
+            printf("ID: %s\n\n", current_satu->id);
+            break; // Exit the loop after printing the details
+        }
+        current_satu = current_satu->next; // Move to the next patient
+    }
+    if (!found) {
+        // If the loop finishes without finding the patient, print a message
+        printf("Data pasien dengan ID '%s' tidak ditemukan.\n", temp_id);
+        return;
+    } else {
+        int found_2 = 0;
+        while (current_dua != NULL) {
+            if (strcmp(current_dua->id, temp_id) == 0) { // Compare the IDs
+                found_2++;
+                printf("Riwayat %d\nTanggal: %s\nDiagnosis: %s\nTindakan: %s\nKontrol: %s\nBiaya: Rp. %d\n",found_2, current_dua->tanggal, current_dua->diagnosis, current_dua->tindakan, current_dua->kontrol, current_dua->biaya);
+                break;
+            }
+            current_dua = current_dua->next;
+        }
+        if (!found_2) {
+            printf("Data diagnosis pasien dengan ID %s tidak ditemukan.\nTidak ada data yang diubah pada csv dua\n", temp_id);
+        }
+    }
+}
 
 // Fitur 4 (Pendapatan dan Keuangan Klinik)
 // Fungsi untuk membuat format rupiah
