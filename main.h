@@ -54,6 +54,7 @@ void save(char* filename, Data* data);
 void print_satu(Data* data);
 void print_dua(Data* data);
 void print_tiga(Data* data);
+void freeData(Data *data);
 void insertEnd(Data *database);
 void search(Data *database, char *data);
 void updateData(Data *database, char *data);
