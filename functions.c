@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// File Processing Functions
 void insert(data* data, char* filename, void* new_node) {
     if (strcmp(filename, "satu.csv") == 0) {
         satu* new_satu = (satu*)new_node;
