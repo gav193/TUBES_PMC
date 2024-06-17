@@ -9,7 +9,7 @@
 int main() {
 
     //input bla2
-    data data = {NULL, NULL, NULL};
+    Data data = {NULL, NULL, NULL};
     parse("satu.csv", &data);
     parse("dua.csv", &data);
     parse("tiga.csv", &data);
@@ -22,10 +22,10 @@ int main() {
         char string[MAX_LEN];
         scanf("%d", &choice);
         getchar();  // Consume newline
-    
+        parse("satu.csv", &data);
+        parse("dua.csv", &data);
         switch (choice) {
             case 1: 
-                
                 printf("Pilih operasi:\n1. Cari data pasien\n2. Tambah data pasien\n3. Ubah data pasien\n4. Hapus data pasien\n5. Back\nPilihan: ");
                 scanf("%d", &choice_2);
                 {switch (choice_2) {
@@ -73,6 +73,8 @@ int main() {
                 break;
             default: printf("Pilihan tidak valid, ulangi input!\n"); break; //sori gakepikiran yang lain
         }
+        save("satu.csv", &data);
+        save("dua.csv", &data);
     } while (choice != 7);
 
     return 0;
