@@ -627,90 +627,6 @@ void hapusData(Data *database, char *data) {
     if (!found) {printf("Data dengan ID %s tidak ditemukan", data);}
 }
 
-//Informasi pasien dan riwayat medisnya di klinik X
-//Input nama/ID pasien -> iterasi ke dataset dua, print every diagnosis of ID that matches
-//void riwayatPasien (char ), modif dari search
-
-//Search & print list
-void riwayatPasien(Data *database, char *data) {
-    satu *sSatu = database->satu; 
-    dua *sDua = database->dua;
-    satu *ptrSatu; dua *ptrDua;
-    int found = 0, exist = 0, num = 1;
-
-    //Jika list kosong
-    if (sSatu == NULL || sDua == NULL) {
-        printf("Database kosong.\n");
-        return;
-    }
-
-    else {
-        printf("\n[ Riwayat Berobat Pasien ]\n");
-    }
-
-    //Jika data head
-    if (strcmp(sSatu->id, data) == 0) {
-        printf("Data Pasien:\n");
-        printf("%-25s| %-15s| %-18s| %-4s| %-11s| %s\n",
-               "Nama", "Alamat", "Tanggal Lahir", "Um", "BPJS", "ID");
-        printf("%-25s| %-15s| %-18s| %-4d| %-11s| %s\n",
-                sSatu->nama, sSatu->alamat, sSatu->tgl_lahir, 
-                sSatu->umur, sSatu->bpjs, sSatu->id);
-        exist = 1;
-    }
-
-    //Jika data bukan node start/head
-    ptrSatu = sSatu;
-    while (ptrSatu->next != NULL) {
-        ptrSatu = ptrSatu->next;
-        if (strcmp(ptrSatu->id, data) == 0) {
-            printf("Data Pasien:\n");
-            printf("%-25s| %-15s| %-18s| %-4s| %-11s| %s\n",
-               "Nama", "Alamat", "Tanggal Lahir", "Um", "BPJS", "ID");
-            printf("%-25s| %-15s| %-18s| %-4d| %-11s| %s\n",
-                ptrSatu->nama, ptrSatu->alamat, ptrSatu->tgl_lahir, 
-                ptrSatu->umur, ptrSatu->bpjs, ptrSatu->id);
-            exist = 1;
-            break;
-        }
-    }
-
-    //Jika data tidak ditemukan
-    if (!exist) {
-        printf("Data pasien dengan ID %s tidak ditemukan.\n", data);
-        return;
-    }
-
-    //Else search di struct dua
-    else {
-        printf("\nRiwayat Berobat Pasien:\n");
-        printf("No. | %-18s| %-15s| %-18s| %-18s\n",
-               "Tanggal", "Diagnosis", "Tindakan", "Kontrol");
-
-        //Jika data head
-        if (strcmp(sDua->id, data) == 0) {
-            printf("%-4d| %-18s| %-15s| %-18s| %-18s\n",
-                num, sDua->tanggal, sDua->diagnosis, sDua->tindakan, sDua->kontrol);
-            found = 1; num ++;
-        }
-
-        //Jika data selain head
-        ptrDua = sDua;
-        while (ptrDua->next != NULL) {
-            ptrDua = ptrDua->next;
-            if (strcmp(ptrDua->id, data) == 0) {
-                printf("%-4d| %-18s| %-15s| %-18s| %-18s\n",
-                num, ptrDua->tanggal, ptrDua->diagnosis, ptrDua->tindakan, ptrDua->kontrol);
-                found = 1; num ++;
-            }
-        }
-        
-        if (!found) {
-            printf("Pasien dengan ID %s tidak memiliki riwayat berobat.\n", data);
-        }
-    }
-}
-
 // Fitur 2 (Data Riwayat)
 int is_leap_year(int year) {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
@@ -1145,47 +1061,86 @@ void crud_ket_pasien(Data* data) {
 }
 
 // Fitur 3 (Informasi Pasien dan Riwayat Medis)
-void tampil_medis(Data* data) { // Fungsi substitusi sementara (Gavin)
-    char temp_id[MAX_LEN];
-    printf("Input ID untuk mencari data dan riwayat medis : ");
-    scanf(" %99[^\n]", temp_id);
-    satu* current_satu = data->satu; // Start from the head of the linked list of patients
-    dua* current_dua = data -> dua;
-    char edit_id[MAX_LEN];
-    int found = 0;
-    while (current_satu != NULL) {
-        if (strcmp(current_satu->id, temp_id) == 0) { // Compare the IDs
-            // Found the patient, print their details
-            found = 1;
-            printf("Data pasien ditemukan:\n");
-            printf("Nama: %s\n", current_satu->nama);
-            printf("Alamat: %s\n", current_satu->alamat);
-            printf("Kota: %s\n", current_satu->kota);
-            printf("Tempat lahir: %s\n", current_satu->loc_lahir);
-            printf("Tanggal lahir: %s\n", current_satu->tgl_lahir);
-            printf("Umur: %d\n", current_satu->umur);
-            printf("Nomor BPJS: %s\n", current_satu->bpjs);
-            printf("ID: %s\n\n", current_satu->id);
-            break; // Exit the loop after printing the details
-        }
-        current_satu = current_satu->next; // Move to the next patient
-    }
-    if (!found) {
-        // If the loop finishes without finding the patient, print a message
-        printf("Data pasien dengan ID '%s' tidak ditemukan.\n", temp_id);
+//Informasi pasien dan riwayat medisnya di klinik X
+//Input nama/ID pasien -> iterasi ke dataset dua, print every diagnosis of ID that matches
+//void riwayatPasien (char ), modif dari search
+
+//Search & print list
+void riwayatPasien(Data *database, char *data) {
+    satu *sSatu = database->satu; 
+    dua *sDua = database->dua;
+    satu *ptrSatu; dua *ptrDua;
+    int found = 0, exist = 0, num = 1;
+
+    //Jika list kosong
+    if (sSatu == NULL || sDua == NULL) {
+        printf("Database kosong.\n");
         return;
-    } else {
-        int found_2 = 0;
-        while (current_dua != NULL) {
-            if (strcmp(current_dua->id, temp_id) == 0) { // Compare the IDs
-                found_2++;
-                printf("Riwayat %d\nTanggal: %s\nDiagnosis: %s\nTindakan: %s\nKontrol: %s\nBiaya: Rp. %d\n",found_2, current_dua->tanggal, current_dua->diagnosis, current_dua->tindakan, current_dua->kontrol, current_dua->biaya);
-                break;
-            }
-            current_dua = current_dua->next;
+    }
+
+    else {
+        printf("\n[ Riwayat Berobat Pasien ]\n");
+    }
+
+    //Jika data head
+    if (strcmp(sSatu->id, data) == 0) {
+        printf("Data Pasien:\n");
+        printf("%-25s| %-15s| %-18s| %-4s| %-11s| %s\n",
+               "Nama", "Alamat", "Tanggal Lahir", "Um", "BPJS", "ID");
+        printf("%-25s| %-15s| %-18s| %-4d| %-11s| %s\n",
+                sSatu->nama, sSatu->alamat, sSatu->tgl_lahir, 
+                sSatu->umur, sSatu->bpjs, sSatu->id);
+        exist = 1;
+    }
+
+    //Jika data bukan node start/head
+    ptrSatu = sSatu;
+    while (ptrSatu->next != NULL) {
+        ptrSatu = ptrSatu->next;
+        if (strcmp(ptrSatu->id, data) == 0) {
+            printf("Data Pasien:\n");
+            printf("%-25s| %-15s| %-18s| %-4s| %-11s| %s\n",
+               "Nama", "Alamat", "Tanggal Lahir", "Um", "BPJS", "ID");
+            printf("%-25s| %-15s| %-18s| %-4d| %-11s| %s\n",
+                ptrSatu->nama, ptrSatu->alamat, ptrSatu->tgl_lahir, 
+                ptrSatu->umur, ptrSatu->bpjs, ptrSatu->id);
+            exist = 1;
+            break;
         }
-        if (!found_2) {
-            printf("Data diagnosis pasien dengan ID %s tidak ditemukan.\nTidak ada data yang diubah pada csv dua\n", temp_id);
+    }
+
+    //Jika data tidak ditemukan
+    if (!exist) {
+        printf("Data pasien dengan ID %s tidak ditemukan.\n", data);
+        return;
+    }
+
+    //Else search di struct dua
+    else {
+        printf("\nRiwayat Berobat Pasien:\n");
+        printf("No. | %-18s| %-15s| %-18s| %-18s\n",
+               "Tanggal", "Diagnosis", "Tindakan", "Kontrol");
+
+        //Jika data head
+        if (strcmp(sDua->id, data) == 0) {
+            printf("%-4d| %-18s| %-15s| %-18s| %-18s\n",
+                num, sDua->tanggal, sDua->diagnosis, sDua->tindakan, sDua->kontrol);
+            found = 1; num ++;
+        }
+
+        //Jika data selain head
+        ptrDua = sDua;
+        while (ptrDua->next != NULL) {
+            ptrDua = ptrDua->next;
+            if (strcmp(ptrDua->id, data) == 0) {
+                printf("%-4d| %-18s| %-15s| %-18s| %-18s\n",
+                num, ptrDua->tanggal, ptrDua->diagnosis, ptrDua->tindakan, ptrDua->kontrol);
+                found = 1; num ++;
+            }
+        }
+        
+        if (!found) {
+            printf("Pasien dengan ID %s tidak memiliki riwayat berobat.\n", data);
         }
     }
 }
