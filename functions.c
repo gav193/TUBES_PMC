@@ -6,7 +6,7 @@
 #include <ctype.h>
 
 // File Processing Functions
-void insert(data* data, char* filename, void* new_node) {
+void insert(Data* data, char* filename, void* new_node) {
     if (strcmp(filename, "satu.csv") == 0) {
         satu* new_satu = (satu*)new_node;
         if (data->satu == NULL) {
@@ -51,69 +51,81 @@ void remove_newline(char* str) {
 }
 
 void parse_tanggal(dua* node) {
-    // Handle different date formats
-    if (strstr(node->tanggal, "Januari")) {
-        sscanf(node->tanggal, "%d Januari %d", &node->hari, &node->tahun);
-        node->bulan = 1;
-    } else if (strstr(node->tanggal, "Februari")) {
-        sscanf(node->tanggal, "%d Februari %d", &node->hari, &node->tahun);
-        node->bulan = 2;
-    } else if (strstr(node->tanggal, "Maret")) {
-        sscanf(node->tanggal, "%d Maret %d", &node->hari, &node->tahun);
-        node->bulan = 3;
-    } else if (strstr(node->tanggal, "April")) {
-        sscanf(node->tanggal, "%d April %d", &node->hari, &node->tahun);
-        node->bulan = 4;
-    } else if (strstr(node->tanggal, "Mei")) {
-        sscanf(node->tanggal, "%d Mei %d", &node->hari, &node->tahun);
-        node->bulan = 5;
-    } else if (strstr(node->tanggal, "Juni")) {
-        sscanf(node->tanggal, "%d Juni %d", &node->hari, &node->tahun);
-        node->bulan = 6;
-    } else if (strstr(node->tanggal, "Juli")) {
-        sscanf(node->tanggal, "%d Juli %d", &node->hari, &node->tahun);
-        node->bulan = 7;
-    } else if (strstr(node->tanggal, "Agustus")) {
-        sscanf(node->tanggal, "%d Agustus %d", &node->hari, &node->tahun);
-        node->bulan = 8;
-    } else if (strstr(node->tanggal, "September")) {
-        sscanf(node->tanggal, "%d September %d", &node->hari, &node->tahun);
-        node->bulan = 9;
-    } else if (strstr(node->tanggal, "Oktober")) {
-        sscanf(node->tanggal, "%d Oktober %d", &node->hari, &node->tahun);
-        node->bulan = 10;
-    } else if (strstr(node->tanggal, "November")) {
-        sscanf(node->tanggal, "%d November %d", &node->hari, &node->tahun);
-        node->bulan = 11;
-    } else if (strstr(node->tanggal, "Desember")) {
-        sscanf(node->tanggal, "%d Desember %d", &node->hari, &node->tahun);
-        node->bulan = 12;
-    } else {
-        // Handle format "DD-MMM-YY"
-        char month_str[4];
-        sscanf(node->tanggal, "%2d-%3s-%2d", &node->hari, month_str, &node->tahun);
-        if (node->tahun < 100) {
-            node->tahun += 2000; // Adjust year
+    char* token;
+    char temp_tgl[MAX_LEN];
+    dua* new_dua = node;
+    strcpy(temp_tgl, new_dua->tanggal);
+    int len = strlen(temp_tgl);
+    char separator[2] = " ";
+    // Detect separator
+    for (int i = 0; i < len; i++) {
+        if (temp_tgl[i] == '-') {
+            separator[0] = '-';
+            break;
         }
-        if (strcmp(month_str, "Jan") == 0) node->bulan = 1;
-        else if (strcmp(month_str, "Feb") == 0) node->bulan = 2;
-        else if (strcmp(month_str, "Mar") == 0) node->bulan = 3;
-        else if (strcmp(month_str, "Apr") == 0) node->bulan = 4;
-        else if (strcmp(month_str, "May") == 0) node->bulan = 5;
-        else if (strcmp(month_str, "Jun") == 0) node->bulan = 6;
-        else if (strcmp(month_str, "Jul") == 0) node->bulan = 7;
-        else if (strcmp(month_str, "Aug") == 0) node->bulan = 8;
-        else if (strcmp(month_str, "Sep") == 0) node->bulan = 9;
-        else if (strcmp(month_str, "Oct") == 0) node->bulan = 10;
-        else if (strcmp(month_str, "Nov") == 0) node->bulan = 11;
-        else if (strcmp(month_str, "Dec") == 0) node->bulan = 12;
+    }
+
+    // Parse day
+    token = strtok(temp_tgl, separator);
+    if (token) {
+        new_dua->hari = atoi(token);
+    } else {
+        printf("Format tanggal tidak valid(%s): %s\n",filename, new_dua->tanggal);
+        return;
+    }
+
+    // Parse month
+    token = strtok(NULL, separator);
+    if (token) {
+        if (strcmp(token, "Januari") == 0 || strcmp(token, "januari") == 0 || strcmp(token, "Jan") == 0 || strcmp(token, "jan") == 0) {
+            new_dua->bulan = 1;
+        } else if (strcmp(token, "Februari") == 0 || strcmp(token, "februari") == 0 || strcmp(token, "Feb") == 0 || strcmp(token, "feb") == 0) {
+            new_dua->bulan = 2;
+        } else if (strcmp(token, "Maret") == 0 || strcmp(token, "maret") == 0 || strcmp(token, "Mar") == 0 || strcmp(token, "mar") == 0) {
+            new_dua->bulan = 3;
+        } else if (strcmp(token, "April") == 0 || strcmp(token, "april") == 0 || strcmp(token, "Apr") == 0 || strcmp(token, "apr") == 0) {
+            new_dua->bulan = 4;
+        } else if (strcmp(token, "Mei") == 0 || strcmp(token, "mei") == 0) {
+            new_dua->bulan = 5;
+        } else if (strcmp(token, "Juni") == 0 || strcmp(token, "juni") == 0 || strcmp(token, "Jun") == 0 || strcmp(token, "jun") == 0) {
+            new_dua->bulan = 6;
+        } else if (strcmp(token, "Juli") == 0 || strcmp(token, "juli") == 0 || strcmp(token, "Jul") == 0 || strcmp(token, "jul") == 0) {
+            new_dua->bulan = 7;
+        } else if (strcmp(token, "Agustus") == 0 || strcmp(token, "agustus") == 0 || strcmp(token, "Aug") == 0 || strcmp(token, "aug") == 0) {
+            new_dua->bulan = 8;
+        } else if (strcmp(token, "September") == 0 || strcmp(token, "september") == 0 || strcmp(token, "Sep") == 0 || strcmp(token, "sep") == 0) {
+            new_dua->bulan = 9;
+        } else if (strcmp(token, "Oktober") == 0 || strcmp(token, "oktober") == 0 || strcmp(token, "Okt") == 0 || strcmp(token, "okt") == 0) {
+            new_dua->bulan = 10;
+        } else if (strcmp(token, "November") == 0 || strcmp(token, "november") == 0 || strcmp(token, "Nov") == 0 || strcmp(token, "nov") == 0) {
+            new_dua->bulan = 11;
+        } else if (strcmp(token, "Desember") == 0 || strcmp(token, "desember") == 0 || strcmp(token, "Des") == 0 || strcmp(token, "des") == 0) {
+            new_dua->bulan = 12;
+        } else {
+            printf("Ditemukan bulan yang tidak valid(%s) : %s\n",filename, new_dua->tanggal);
+            return;
+        }
+    } else {
+        printf("Format tanggal tidak valid(%s): %s\n",filename, new_dua->tanggal);
+        return;
+    }
+    token = strtok(NULL, separator);
+    if (token) { 
+        int temp = atoi(token);
+        if (temp>=2000) {
+            temp-=2000;
+        }   
+        new_dua->tahun = temp;
+    } else { 
+        printf("Format tanggal tidak valid(%s): %s\n",filename, new_dua->tanggal);
+        return;
     }
 }
 
-void parse(char* filename, data* data) {
+void parse(char* filename, Data* data) {
     FILE* stream = fopen(filename, "r");
     if (!stream) {
-        printf("Unable to open file");
+        printf("File tidak dapat dibuka");
         return;
     }
     char line[1024];
@@ -166,7 +178,7 @@ void parse(char* filename, data* data) {
     fclose(stream);
 }
 
-    void save(char* filename, data* data) {
+    void save(char* filename, Data* data) {
         FILE* stream = fopen(filename, "w");
         if (!stream) {
             printf("Error opening file for writing: %s\n", filename);
@@ -223,7 +235,7 @@ void parse(char* filename, data* data) {
         fclose(stream);
     }
 
-    void print_satu(data* data) {
+    void print_satu(Data* data) {
         printf("Data Satu:\n");
         satu* current = data->satu;
         int count = 1;
@@ -235,7 +247,7 @@ void parse(char* filename, data* data) {
         }
     }
 
-    void print_dua(data* data) {
+    void print_dua(Data* data) {
         printf("Data Dua:\n");
         dua* current = data->dua;
         int count = 1;
@@ -247,7 +259,7 @@ void parse(char* filename, data* data) {
         }
     }
 
-    void print_tiga(data* data) {
+    void print_tiga(Data* data) {
         printf("Data Tiga:\n");
         tiga* current = data->tiga;
         int count = 1;
@@ -385,7 +397,7 @@ void convertTanggalSatu(satu *node){
 }
 
 //Masukkan data pasien baru di akhir list
-void insertEnd(data *database) {
+void insertEnd(Data *database) {
     satu *start = database->satu;
     satu *ptr, *temp; 
     int id, num;
@@ -456,7 +468,7 @@ void insertEnd(data *database) {
 }
 
 //Search & print list
-void search(data *database, char *data) {
+void search(Data *database, char *data) {
     satu *start = database->satu;
     satu *ptr;
     int found = 0;
@@ -497,7 +509,7 @@ void search(data *database, char *data) {
 
 //Search & print list berdasarkan id
 //Kalo mau berdasarkan nama atau bpjs bisa tambahin 'type' di switch case
-void updateData(data *database, char *data) {
+void updateData(Data *database, char *data) {
     satu *start = database->satu;
     satu *ptr;
     int found = 0;
@@ -575,7 +587,7 @@ void updateData(data *database, char *data) {
 }
 
 //Hapus data pasien berdasarkan ID
-void hapusData(data *database, char *data) {
+void hapusData(Data *database, char *data) {
     satu *start = database->satu;
     satu *temp, *ptr; int found = 0;
 
@@ -620,7 +632,7 @@ void hapusData(data *database, char *data) {
 //void riwayatPasien (char ), modif dari search
 
 //Search & print list
-void riwayatPasien(data *database, char *data) {
+void riwayatPasien(Data *database, char *data) {
     satu *sSatu = database->satu; 
     dua *sDua = database->dua;
     satu *ptrSatu; dua *ptrDua;
@@ -744,7 +756,7 @@ void add_days(char* input_date, char* result_date) {
     
     sprintf(result_date, "%d %s %d", day, months[month - 1], year);
 }
-int isTanggalExists(data* data, const char* id, const char* tanggal) {
+int isTanggalExists(Data* data, const char* id, const char* tanggal) {
     dua* current = data->dua;
     while (current != NULL) {
         if (strcmp(current->id, id) == 0 && strcmp(current->tanggal, tanggal) == 0) {
@@ -777,7 +789,7 @@ void convertTanggal(const char* input, char* output, int format_type) {
 }
 
 
-int selectTanggalKedatangan(data* data, const char* id) {
+int selectTanggalKedatangan(Data* data, const char* id) {
     dua* current = data->dua;
     int index = 0;
     int selected_index = -1;
@@ -809,7 +821,7 @@ int selectTanggalKedatangan(data* data, const char* id) {
 }
 
 // Fungsi nyari ID pasien di linked list "satu"
-satu* findPasienInSatu(data* data, const char* id) {
+satu* findPasienInSatu(Data* data, const char* id) {
     satu* current = data->satu;
     while (current != NULL) {
         if (strcmp(current->id, id) == 0) {
@@ -821,7 +833,7 @@ satu* findPasienInSatu(data* data, const char* id) {
 }
 
 // Fungsi nyari ID pasien di linked list "dua"
-int findPasien(data* data, const char* id) {
+int findPasien(Data* data, const char* id) {
     dua* current = data->dua;
     int index = 0;
     while (current != NULL) {
@@ -835,7 +847,7 @@ int findPasien(data* data, const char* id) {
 }
 
 // Fungsi biaya tindakan berdasarkan tindakan di linked list "tiga"
-int getBiayaTindakan(data* data, const char* tindakan) {
+int getBiayaTindakan(Data* data, const char* tindakan) {
     tiga* current = data->tiga;
     while (current != NULL) {
         if (strcmp(current->aktivitas, tindakan) == 0) {
@@ -848,7 +860,7 @@ int getBiayaTindakan(data* data, const char* tindakan) {
 
 // Fungsi buat nambahin entry ke linked list yang "dua"
 
-void addEntry(data* data) {
+void addEntry(Data* data) {
     char id[MAX_LEN];
     printf("Masukkan ID pasien: ");
     fgets(id, MAX_LEN, stdin);
@@ -939,7 +951,7 @@ void addEntry(data* data) {
 
 
 // Fungsi update
-void updateEntry(data* data) {
+void updateEntry(Data* data) {
     char id[MAX_LEN];
     printf("Masukkan ID pasien: ");
     fgets(id, MAX_LEN, stdin);
@@ -1045,7 +1057,7 @@ void updateEntry(data* data) {
 
 
 // Fungsi buat hapus entry dari linked list yang "dua"
-void deleteEntry(data* data) {
+void deleteEntry(Data* data) {
     char id[MAX_LEN];
     printf("Masukkan ID pasien: ");
     fgets(id, MAX_LEN, stdin);
@@ -1083,7 +1095,7 @@ void deleteEntry(data* data) {
 
 
 // Fungsi buat nampilin entry dari linked list "dua"
-void displayEntry(data* data) {
+void displayEntry(Data* data) {
     char id[MAX_LEN];
     printf("Masukkan ID pasien: ");
     fgets(id, MAX_LEN, stdin);
@@ -1116,7 +1128,7 @@ void displayEntry(data* data) {
 
 
 // Fungsi utama untuk menjalankan CRUD
-void crud_ket_pasien(data* data) {
+void crud_ket_pasien(Data* data) {
     printf("Pilih operasi apa yang akan dilakukan:\n1. Penambahan\n2. Pengubahan\n3. Penghapusan\n4. Menampilkan informasi\nPilihan: ");
     int choice;
     scanf("%d", &choice);
@@ -1250,7 +1262,7 @@ dua* ReadFileDua(const char* filename) {
 }
 
 // Fungsi untuk menghitung rerata biaya per tahun
-void RerataTahun(data* dataPasien) {
+void RerataTahun(Data* dataPasien) {
     int tahun_sum[MAX_YEAR] = {0};
     int tahun_count[MAX_YEAR] = {0};
 
@@ -1273,7 +1285,7 @@ void RerataTahun(data* dataPasien) {
 }
 
 // Fungsi untuk menghitung total biaya per bulan tiap tahunnya
-void TotalPerBulan(data* dataPasien) {
+void TotalPerBulan(Data* dataPasien) {
     int bulan_sum[MAX_YEAR][12] = {0};
 
     dua* current = dataPasien->dua;
@@ -1295,7 +1307,7 @@ void TotalPerBulan(data* dataPasien) {
 }
 
 // Fungsi untuk menghitung total biaya per tahun
-void TotalPerTahun(data* dataPasien) {
+void TotalPerTahun(Data* dataPasien) {
     int tahun_sum[MAX_YEAR] = {0};
 
     dua* current = dataPasien->dua;
@@ -1315,7 +1327,7 @@ void TotalPerTahun(data* dataPasien) {
 }
 
 void laporan_keuangan() {
-    data data_pasien;
+    Data data_pasien;
     data_pasien.dua = ReadFileDua("dua.csv");
 
     RerataTahun(&data_pasien);
@@ -1333,7 +1345,7 @@ void laporan_keuangan() {
 }
 
 // Fitur 5
-void report_disease_frequency(data* data) {
+void report_disease_frequency(Data* data) {
     typedef struct frequency {
         char diagnosis[MAX_LEN];
         int count;
@@ -1515,7 +1527,7 @@ void format_date(int day, int month, int year, char* buffer1, char* buffer2) {
 }
 
 // Fungsi nampilin kontrol berdasarkan tanggal
-void display_kontrol(data* data) {
+void display_kontrol(Data* data) {
     char input[50];
     int day, month, year;
     char formatted_date1[30];
