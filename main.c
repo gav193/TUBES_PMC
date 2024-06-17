@@ -1,10 +1,10 @@
-#include "main.h"
+#include "mainp.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
 #include <ctype.h>
-#include "functions.c"
+#include "functionsp.c"
 
 int main() {
 
@@ -18,12 +18,14 @@ int main() {
     int choice = 0; 
     int choice_2 = 0;
     do {
-        printf("Daftar fungsi yang dapat dilakukan:\n1. Daftar Pasien\n2. Daftar Riwayat\n3. Cari Riwayat Pasien\n4. fungsi no.4\n5. Data jumlah pasien dan penyakit keseluruhan (per bulan dan per tahun)\n6. fungsi no.6\n7. Exit program\nPilihan: ");
+        printf("Daftar fungsi yang dapat dilakukan:\n1. Data Pasien\n2. Data Riwayat\n3. Cari Riwayat Pasien\n4. Laporan Keuangan\n5. Laporan Frekuensi Penyakit\n6. Laporan Kontrol\n7. Exit program\nPilihan: ");
         char string[MAX_LEN];
         scanf("%d", &choice);
         getchar();  // Consume newline
+        freeData(&data);
         parse("satu.csv", &data);
         parse("dua.csv", &data);
+        parse("tiga.csv", &data);
         switch (choice) {
             case 1: 
                 printf("Pilih operasi:\n1. Cari data pasien\n2. Tambah data pasien\n3. Ubah data pasien\n4. Hapus data pasien\n5. Back\nPilihan: ");
@@ -69,13 +71,12 @@ int main() {
                 printf("Exiting system...\n");
                 save("satu.csv", &data);
                 save("dua.csv", &data);
-                save("tiga.csv", &data);
                 break;
             default: printf("Pilihan tidak valid, ulangi input!\n"); break; //sori gakepikiran yang lain
         }
         save("satu.csv", &data);
         save("dua.csv", &data);
     } while (choice != 7);
-
+    freeData(&data);
     return 0;
 }
