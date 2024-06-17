@@ -60,6 +60,7 @@ void updateData(Data *database, char *data);
 void hapusData(Data *database, char *data);
 void riwayatPasien(Data *database, char *data);
 void crud_ket_pasien(Data* data);
+void tampil_medis(Data* data);
 void display_kontrol(Data* data);
 void laporan_keuangan();
 void report_disease_frequency(Data* data);
