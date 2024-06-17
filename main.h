@@ -48,7 +48,7 @@ typedef struct data {
 // Function prototypes
 void insert(data* data, char* filename, void* new_node);
 void remove_newline(char* str);
-void parse_tanggal(void* node, char* filename);
+void parse_tanggal(dua* node);
 void parse(char* filename, data* data);
 void save(char* filename, data* data);
 void print_satu(data* data);
@@ -57,6 +57,6 @@ void print_tiga(data* data);
 void crud_ket_pasien(data* data);
 void display_kontrol(data* data);
 void laporan_keuangan();
-
+void report_disease_frequency(data* data);
 
 #endif
