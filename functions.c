@@ -176,7 +176,7 @@ void parse(char* filename, data* data) {
         
         // Write header and data based on filename
         if (strcmp(filename, "satu.csv") == 0) {
-            printf("Saving data to satu.csv\n");
+            //printf("Saving data to satu.csv\n");
             fprintf(stream, "No;Nama Lengkap;Alamat;Kota;Tempat Lahir;Tanggal Lahir;No BPJS;ID Pasien\n");
             satu* current = data->satu;
             int row = 1;
@@ -189,7 +189,7 @@ void parse(char* filename, data* data) {
                 }
             }
         } else if (strcmp(filename, "dua.csv") == 0) {
-            printf("Saving data to dua.csv\n");
+            //printf("Saving data to dua.csv\n");
             fprintf(stream, "No;Tanggal;ID Pasien;Diagnosis;Tindakan;Kontrol;Biaya (Rp)\n");
             dua* current = data->dua;
             int row = 1;
@@ -202,7 +202,7 @@ void parse(char* filename, data* data) {
                 }
             }
         } else if (strcmp(filename, "tiga.csv") == 0) {
-            printf("Saving data to tiga.csv\n");
+            //printf("Saving data to tiga.csv\n");
             fprintf(stream, "No;Aktivitas;Biaya (Rp)\n");
             tiga* current = data->tiga;
             int row = 1;
