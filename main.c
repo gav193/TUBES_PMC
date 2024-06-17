@@ -1,11 +1,10 @@
 #include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "crud_ket_pasien.c"
-#include "display_kontrol.c"
-#include "keuangan_klinik.c"
+#include <string.h>
+#include <locale.h>
+#include <ctype.h>
 #include "functions.c"
-#include "fungsiDataPasien.c"
 
 int main() {
 
