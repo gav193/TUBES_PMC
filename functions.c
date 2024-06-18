@@ -519,6 +519,7 @@ void search(Data *database, char *data) {
 
     //Jika data head
     if (strcmp(start->id, data) == 0) {
+        convertTanggalSatu(start);
         printData(start);
         found = 1;
     }
@@ -528,6 +529,7 @@ void search(Data *database, char *data) {
     while (ptr->next != NULL) {
         ptr = ptr->next;
         if (strcmp(ptr->id, data) == 0) {
+            convertTanggalSatu(ptr);
             printData(ptr);
             found = 1;
         }
