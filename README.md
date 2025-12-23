@@ -12,24 +12,3 @@ A clinic in City X is making a patient-listing system to see whether they're com
 3. Providing patient information and medical history in clinic X to the medical workers
 4. Retrieving a report information on monthly and annual income along with the average annual income of clinic X
 5. Retrieving information to the medical workers about patients who need to come back for control
-
-
-Sebagai laporan, anda dan tim diminta untuk mengumpulkan:
-1. Sebuah dokumen dalam bentuk PDF yang berisi:
-a. Flowchart dan detail penjelasannya
-b. DFD dan detail penjelasannya
-c. Desain Graphical User Interface (GUI) dan detail penjelasannya
-d. Desain struktur data yang anda dan tim akan gunakan dan detail penjelasannya
-2. Source code, library-library dan sebuah dokumen yang memberikan petunjuk untuk menjalan aplikasi
-yang anda dan tim buat (lakukan kompresi dalam bentuk ZIP/RAR)
-Note: jangan sertakan executable file (e.g. file .EXE untuk OS Windows)
-3. Laporan video presentasi tim (maksimum 30 menit), sebagai pengganti presentasi yang memuat:
-a. Pengenalan tim
-b. Tugas masing-masing anggota tim
-c. Flowchart dan detail penjelasannya
-d. DFD dan detail penjelasannya
-e. Desain Graphical User Interface (GUI) dan detail penjelasannya
-f. Desain struktur data yang anda dan tim akan gunakan dan detail penjelasannya
-g. Penjelasan kode dan hasil aplikasinya
-h. Analisis dan kesimpulan
-i. Demo produk (aplikasi) 
